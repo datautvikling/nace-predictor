@@ -1,0 +1,9 @@
+# IntelliJ project files
+.idea
+*.iml
+out
+gen
+
+# Python library and generated files
+venv
+**/__pycache__

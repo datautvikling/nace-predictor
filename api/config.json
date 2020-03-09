@@ -1,0 +1,10 @@
+{
+  "model": {
+    "type": "FastText",
+    "name": "fasttext-2020-03-06",
+    "artifactType": "LocalFile",
+    "artifactInfo": {
+      "path": "data/model.ftz"
+    }
+  }
+}

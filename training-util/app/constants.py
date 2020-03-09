@@ -1,0 +1,9 @@
+ENHET_NACE_FILE_NAME = 'nacekoder.tab'
+ENHET_FORMAAL_FILE_NAME = 'formaal.tab'
+ASSEMBLED_DATA_FILE_NAME = 'assembled_data.csv'
+PREPROCESSED_DATA_FILE_NAME = 'preprocessed_data.csv'
+PROCESSED_DATA_FILE_NAME = 'processed_data.csv'
+TRAINING_SET_FILE_NAME = 'training_set.csv'
+TESTING_SET_FILE_NAME = 'testing_set.csv'
+TEST_RESULTS_FILE_NAME = 'test_results.csv'
+MODEL_FILE_NAME = "model.ftz"

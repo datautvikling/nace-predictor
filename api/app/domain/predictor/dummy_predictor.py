@@ -1,4 +1,4 @@
-from app.domain.predictor.predictor import Predictor, Prediction, PredictionMetaInfo
+from api.app.domain.predictor.predictor import Predictor, Prediction, PredictionMetaInfo
 
 
 class DummyPredictor(Predictor):

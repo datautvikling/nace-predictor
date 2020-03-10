@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from app.domain.predictor.predictor import Predictor, Prediction, PredictionMetaInfo
+from domain.predictor.predictor import Predictor, Prediction, PredictionMetaInfo
 
 
 @dataclass(frozen=True)

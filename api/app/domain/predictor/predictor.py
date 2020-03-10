@@ -5,7 +5,7 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from typing import List, Tuple
 
-from app.domain.model import Model
+from domain.model import Model
 
 
 @dataclass(frozen=True)

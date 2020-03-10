@@ -3,9 +3,9 @@ from typing import Dict
 
 from fasttext import load_model
 
-from app.domain.model import ModelType, Model
-from app.domain.predictor.fasttext_predictor import FastTextPredictor
-from app.domain.predictor.predictor import Predictor
+from domain.model import ModelType, Model
+from domain.predictor.fasttext_predictor import FastTextPredictor
+from domain.predictor.predictor import Predictor
 
 # Global value that holds the currently used model
 _predictor = None
@@ -25,7 +25,6 @@ def get_predictor(configuration: Dict = None) -> Predictor:
     """
     global _predictor
 
-    # TODO more specific errors
     if not _predictor:
         if configuration:
             _predictor = _load_predictor(configuration)
@@ -40,6 +39,7 @@ def _load_predictor(config):
     model_config = config["model"]
     model_type = ModelType(model_config["type"])
 
+    # TODO more specific errors
     if not model_type == ModelType.fast_text:
         raise Exception("Only FastText is currently supported")
 

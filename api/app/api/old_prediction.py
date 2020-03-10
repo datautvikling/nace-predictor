@@ -1,8 +1,8 @@
 from flask import request
 from flask_restx import Resource, Namespace, fields
 
-from app.domain.predictor.predictor import Prediction
-from app.infrastructure.model_provider import get_predictor
+from domain.predictor.predictor import Prediction
+from infrastructure.model_provider import get_predictor
 
 old_api = Namespace("v0/api", description="Predict NACE codes by text (deprecated)")
 

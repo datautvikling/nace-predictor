@@ -3,14 +3,14 @@ from argparse import ArgumentParser
 from pathlib import Path
 from typing import List
 
-from config import Config
-from steps.assemble import assemble
-from steps.gather import gather
-from steps.preprocess import preprocess
-from steps.process import process
-from steps.split import split
-from steps.test import test
-from steps.train import train
+from app.config import Config
+from app.steps.assemble import assemble
+from app.steps.gather import gather
+from app.steps.preprocess import preprocess
+from app.steps.process import process
+from app.steps.split import split
+from app.steps.test import test
+from app.steps.train import train
 
 ALL_STEPS = [
     ("gather", gather),

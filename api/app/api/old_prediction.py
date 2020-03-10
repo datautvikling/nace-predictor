@@ -1,8 +1,8 @@
 from flask import request
 from flask_restx import Resource, Namespace, fields
 
-from domain.predictor.predictor import Prediction
-from infrastructure.model_provider import get_predictor
+from app.domain.predictor.predictor import Prediction
+from app.infrastructure.model_provider import get_predictor
 
 api = Namespace("v0", description="Predict NACE codes by text (deprecated)")
 
@@ -23,13 +23,12 @@ def to_model(prediction: Prediction):
                      "Predictions are delivered in order of confidence, with the best prediction first. "
                      "This resource is deprecated and only available for compatibility concerns "
                      "- use /v1/prediction instead.")
-class OldPredictor(Resource):
+class DeprecatedPrediction(Resource):
 
     @staticmethod
     @api.deprecated
     @api.marshal_with(model, as_list=True, mask=False)
     @api.param("q", "The text to predict a NACE code for", type="string")
     def get():
-        # TODO clean up input (lowercase, remove punctuation etc)
         q = request.args["q"]  # I would much prefer to receive this as an argument, but that's apparently not easy
         return to_model(get_predictor().predict(q, 5))

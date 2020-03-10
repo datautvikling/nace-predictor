@@ -1,8 +1,8 @@
 from flask import request
 from flask_restx import Namespace, fields, Resource
 
-from domain.predictor.predictor import Prediction
-from infrastructure.model_provider import get_predictor
+from app.domain.predictor.predictor import Prediction
+from app.infrastructure.model_provider import get_predictor
 
 api = Namespace("v1", description="Predict NACE codes.")
 
@@ -47,7 +47,7 @@ def to_model(pred: Prediction):
 @api.route("/prediction")
 @api.doc(description="Predict NACE codes based on a provided description. "
                      "Predictions are delivered in order of confidence, with the best prediction first. ")
-class Predictor(Resource):
+class Prediction(Resource):
 
     @staticmethod
     @api.marshal_with(response_model, mask=False)

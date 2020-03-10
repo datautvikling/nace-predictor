@@ -3,9 +3,9 @@ from typing import Dict
 
 from fasttext import load_model
 
-from domain.model import ModelType, Model
-from domain.predictor.fasttext_predictor import FastTextPredictor
-from domain.predictor.predictor import Predictor
+from app.domain.model import ModelType, Model
+from app.domain.predictor.fasttext_predictor import FastTextPredictor
+from app.domain.predictor.predictor import Predictor
 
 # Global value that holds the currently used model
 _predictor = None

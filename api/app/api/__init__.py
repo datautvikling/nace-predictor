@@ -1,8 +1,8 @@
 from flask import Blueprint
 from flask_restx import Api
 
-from api.old_prediction import api as v0_api
-from api.prediction import api as v1_api
+from app.api.old_prediction import api as v0_api
+from app.api.prediction import api as v1_api
 
 API_BLUEPRINT = Blueprint('api', __name__)
 

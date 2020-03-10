@@ -1,6 +1,6 @@
 from flask import Flask, redirect
 
-from api import API_BLUEPRINT
+from app.api import API_BLUEPRINT
 
 app = Flask(__name__)
 app.register_blueprint(API_BLUEPRINT, url_prefix='/api')

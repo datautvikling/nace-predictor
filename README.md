@@ -15,3 +15,12 @@ Provides prediction services through a RESTful API. See [README.md](api/README.m
 ### training-util
 
 A CLI utility for training models. See [README.md](training-util/README.md).
+
+## Training and providing a model
+
+The steps for training and providing a model through the API is:
+
+- Run the training-util to gather and process source data, and produce a model binary.
+- Provide the trained model binary when running the API
+
+See the README files of the respective applications for details.

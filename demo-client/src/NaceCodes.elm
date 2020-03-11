@@ -12,7 +12,7 @@ codeAndDescription code =
                 |> Dict.get code
                 |> withDefault "Ukjent kode"
     in
-    code ++ " - " ++ description
+    code ++ ": " ++ description
 
 
 codeToDescription : Dict String String

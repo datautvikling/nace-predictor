@@ -138,7 +138,7 @@ viewNavBar =
             [ a [] [ text "NACE Predictor" ] ]
         , li
             [ class "floatRight" ]
-            [ a [ href "/api", target "_blank" ] [ text "API" ] ]
+            [ a [ href apiPath, target "_blank" ] [ text "API" ] ]
         , li
             [ class "floatRight" ]
             [ a

@@ -34,8 +34,15 @@ class Predictor(ABC):
     model: Model
 
     @abstractmethod
-    def predict(self, text: str, amount: int) -> Prediction:
-        """Make a prediction based on a provided text. Produce 'amount' predictions."""
+    def predict(self, text: str, amount: int, threshold: float) -> Prediction:
+        """
+        Make a prediction based on provided text.
+
+        :param text: the text to predict based on.
+        :param amount: the amount of predictions to get
+        :param threshold: the threshold (0 - 1.0) of confidence required to include a specific prediction.
+        :return: a prediction.
+        """
         pass
 
     def model_name(self) -> str:

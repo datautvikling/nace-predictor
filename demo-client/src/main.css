@@ -43,10 +43,11 @@ li a {
 textarea {
     margin: 15px;
     font-size: 14px;
-    width: 400px;
+    width: 300px;
     height: 100px;
 }
 
 .prediction {
     margin: 3px;
+    text-align: center;
 }

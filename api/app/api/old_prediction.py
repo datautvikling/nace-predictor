@@ -31,4 +31,4 @@ class DeprecatedPrediction(Resource):
     @api.param("q", "The text to predict a NACE code for", type="string")
     def get():
         q = request.args["q"]  # I would much prefer to receive this as an argument, but that's apparently not easy
-        return to_model(get_predictor().predict(q, 5))
+        return to_model(get_predictor().predict(q, 5, 0))

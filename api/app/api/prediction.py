@@ -4,6 +4,9 @@ from flask_restx import Namespace, fields, Resource
 from app.domain.predictor.predictor import Prediction
 from app.infrastructure.model_provider import get_predictor
 
+AMOUNT_PARAM = "amount"
+DEFAULT_AMOUNT = 5
+
 api = Namespace("v1", description="Predict NACE codes.")
 
 prediction = api.model("Prediction", {
@@ -52,8 +55,8 @@ class Prediction(Resource):
     @staticmethod
     @api.marshal_with(response_model, mask=False)
     @api.expect(request_model)
-    @api.param("amount", "The amount of predictions to get", type="int", default=5)
+    @api.param(AMOUNT_PARAM, "The amount of predictions to get", type="int", default=DEFAULT_AMOUNT)
     def post():
         text = request.json["text"]
-        amount = int(request.args["amount"])
+        amount = int(request.args[AMOUNT_PARAM]) if AMOUNT_PARAM in request.args else DEFAULT_AMOUNT
         return to_model(get_predictor().predict(text, amount))

@@ -1,9 +1,11 @@
 from flask import Flask, redirect
+from flask_cors import CORS
 
 from app.api import API_BLUEPRINT
 
 app = Flask(__name__)
 app.register_blueprint(API_BLUEPRINT, url_prefix='/api')
+CORS(app)
 
 
 @app.route("/")

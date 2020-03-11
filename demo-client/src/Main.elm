@@ -1,13 +1,17 @@
 module Main exposing (..)
 
 import Browser
-import Html exposing (Html, a, div, h1, h3, li, ol, span, text, textarea)
+import Html exposing (Html, a, div, li, ol, span, text, textarea)
 import Html.Attributes exposing (class, href, placeholder, target, value)
 import Html.Events exposing (onInput)
 import Http
 import Json.Decode as JD
 import Json.Encode as JE
-import NaceCodes exposing (descriptionFor)
+import NaceCodes exposing (codeAndDescription)
+
+
+apiPath =
+    "http://localhost:5000/api/"
 
 
 
@@ -56,7 +60,9 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         ChangeInput newInputText ->
-            ( { model | inputText = newInputText }, getPrediction newInputText )
+            ( { model | inputText = newInputText }
+            , getPrediction newInputText
+            )
 
         GotPrediction result ->
             case result of
@@ -70,7 +76,7 @@ update msg model =
 getPrediction : String -> Cmd Msg
 getPrediction queryText =
     Http.post
-        { url = "http://localhost:5000/api/v1/prediction"
+        { url = apiPath ++ "v1/prediction"
         , body = queryText |> queryTextEncoder |> Http.jsonBody
         , expect = Http.expectJson GotPrediction predictionResultDecoder
         }
@@ -153,7 +159,7 @@ viewPredictionResult result =
 viewPrediction : Prediction -> Html Msg
 viewPrediction prediction =
     div [ class "prediction" ]
-        [ span [] [ prediction.code |> descriptionFor |> text ]
+        [ span [] [ prediction.code |> codeAndDescription |> text ]
         , span []
             [ prediction.confidence
                 |> (\f -> floor (f * 100))

@@ -11,16 +11,20 @@ according to the instructions in the previous link.
 
 ## Running the application
 
+Set the expected API path in [Main.elm](src/Main.elm).
+This should be the path where a running NACE Predictor API is responding.
+
 To start the application, run
 
 ```bash
 elm-app start
 ``` 
 
-
 ## Deploying the application 
 
 Files are included to host the application in [GCP App Engine](https://cloud.google.com/appengine/docs/standard/python/getting-started/hosting-a-static-website).
+
+As when running the application, the API path should be set before building/deploying.
 
 To deploy the application, first build it with
 

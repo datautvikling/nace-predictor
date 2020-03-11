@@ -4,11 +4,15 @@ import Dict exposing (Dict)
 import Maybe exposing (withDefault)
 
 
-descriptionFor : String -> String
-descriptionFor code =
-    codeToDescription
-        |> Dict.get code
-        |> withDefault "Ukjent kode"
+codeAndDescription : String -> String
+codeAndDescription code =
+    let
+        description =
+            codeToDescription
+                |> Dict.get code
+                |> withDefault "Ukjent kode"
+    in
+    code ++ " - " ++ description
 
 
 codeToDescription : Dict String String

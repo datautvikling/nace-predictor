@@ -12,7 +12,7 @@ The project consists of several applications. See their respective README files 
 
 Provides prediction services through a RESTful API. See [README.md](api/README.md).
 
-## demo-client
+### demo-client
 
 A simple demo client that provides a GUI for the API. See [README.md](demo-client/README.md).
 

@@ -1,6 +1,7 @@
 module Main exposing (..)
 
 import Browser
+import Debounce exposing (Debounce)
 import Html exposing (Html, a, div, li, ol, p, span, text, textarea)
 import Html.Attributes exposing (class, href, placeholder, target, value)
 import Html.Events exposing (onInput)
@@ -15,14 +16,28 @@ apiPath =
     "http://localhost:5000/api/"
 
 
+debounceConfig : Debounce.Config Msg
+debounceConfig =
+    { strategy = Debounce.later 500
+    , transform = DebounceMsg
+    }
+
+
 
 ---- MODEL ----
 
 
 type alias Model =
     { inputText : String
-    , result : Result String PredictionResult
+    , result : Response
+    , debounce : Debounce String
     }
+
+
+type Response
+    = Loading
+    | Message String
+    | Success PredictionResult
 
 
 type alias PredictionResult =
@@ -44,12 +59,12 @@ type alias PredictionMetaInfo =
 
 
 typeSomething =
-    Err "Type something to get predictions!"
+    "Type something to get predictions!"
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( Model "" typeSomething, Cmd.none )
+    ( Model "" (Message typeSomething) Debounce.init, Cmd.none )
 
 
 
@@ -57,24 +72,46 @@ init =
 
 
 type Msg
-    = ChangedInput String
+    = NoOp
+    | ChangedInput String
     | GotPrediction (Result Http.Error PredictionResult)
+    | DebounceMsg Debounce.Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
+        NoOp ->
+            ( model, Cmd.none )
+
         ChangedInput "" ->
-            ( { model | inputText = "", result = typeSomething }, Cmd.none )
+            ( { model | inputText = "", result = Message typeSomething }, Cmd.none )
 
         ChangedInput newInputText ->
-            ( { model | inputText = newInputText, result = Err "Loading..." }, getPrediction newInputText )
+            let
+                ( debounce, cmd ) =
+                    Debounce.push debounceConfig newInputText model.debounce
+            in
+            ( { model | inputText = newInputText, debounce = debounce, result = Loading }
+            , cmd
+            )
+
+        DebounceMsg bouncedMsg ->
+            let
+                ( debounce, cmd ) =
+                    Debounce.update
+                        debounceConfig
+                        (Debounce.takeLast getPrediction)
+                        bouncedMsg
+                        model.debounce
+            in
+            ( { model | debounce = debounce }, cmd )
 
         GotPrediction (Ok prediction) ->
-            ( { model | result = Ok prediction }, Cmd.none )
+            ( { model | result = Success prediction }, Cmd.none )
 
         GotPrediction (Err _) ->
-            ( { model | result = Err "Couldn't contact the API. Try again?" }, Cmd.none )
+            ( { model | result = Message "Couldn't contact the API. Try again?" }, Cmd.none )
 
 
 getPrediction : String -> Cmd Msg
@@ -146,13 +183,16 @@ viewNavBar =
         ]
 
 
-viewResult : Result String PredictionResult -> Html Msg
-viewResult result =
-    case result of
-        Err error ->
-            p [] [ text error ]
+viewResult : Response -> Html Msg
+viewResult response =
+    case response of
+        Loading ->
+            p [] [ text "Loading ..." ]
 
-        Ok prediction ->
+        Message msg ->
+            p [] [ text msg ]
+
+        Success prediction ->
             viewPredictionResult prediction
 
 

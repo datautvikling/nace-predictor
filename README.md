@@ -20,11 +20,10 @@ A simple demo client that provides a GUI for the API. See [README.md](demo-clien
 
 A CLI utility for training models. See [README.md](training-util/README.md).
 
-## Training and providing a model
-
-The steps for training and providing a model through the API is:
+## Training, providing and using a model
 
 - Run the training-util to gather and process source data, and produce a model binary.
 - Provide the trained model binary when running the API
+- Run the client to use the API through a GUI
 
 See the README files of the respective applications for details.

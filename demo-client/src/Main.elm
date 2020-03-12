@@ -44,7 +44,7 @@ type alias PredictionMetaInfo =
 
 
 typeSomething =
-    Err "Type something to get a prediction!"
+    Err "Type something to get predictions!"
 
 
 init : ( Model, Cmd Msg )
@@ -68,7 +68,7 @@ update msg model =
             ( { model | inputText = "", result = typeSomething }, Cmd.none )
 
         ChangedInput newInputText ->
-            ( { model | inputText = newInputText }, getPrediction newInputText )
+            ( { model | inputText = newInputText, result = Err "Loading..." }, getPrediction newInputText )
 
         GotPrediction (Ok prediction) ->
             ( { model | result = Ok prediction }, Cmd.none )

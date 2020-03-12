@@ -1,13 +1,14 @@
 module Main exposing (..)
 
 import Browser
-import Html exposing (Html, a, div, li, ol, span, text, textarea)
+import Html exposing (Html, a, div, li, ol, p, span, text, textarea)
 import Html.Attributes exposing (class, href, placeholder, target, value)
 import Html.Events exposing (onInput)
 import Http
 import Json.Decode as JD
 import Json.Encode as JE
 import NaceCodes exposing (codeAndDescription)
+import Result exposing (Result)
 
 
 apiPath =
@@ -20,13 +21,13 @@ apiPath =
 
 type alias Model =
     { inputText : String
-    , prediction : PredictionResult
+    , result : Result String PredictionResult
     }
 
 
 type alias PredictionResult =
     { predictions : List Prediction
-    , meta : Maybe PredictionMetaInfo
+    , meta : PredictionMetaInfo
     }
 
 
@@ -42,9 +43,13 @@ type alias PredictionMetaInfo =
     }
 
 
+typeSomething =
+    Err "Type something to get a prediction!"
+
+
 init : ( Model, Cmd Msg )
 init =
-    ( Model "" (PredictionResult [] Nothing), Cmd.none )
+    ( Model "" typeSomething, Cmd.none )
 
 
 
@@ -52,25 +57,24 @@ init =
 
 
 type Msg
-    = ChangeInput String
+    = ChangedInput String
     | GotPrediction (Result Http.Error PredictionResult)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        ChangeInput newInputText ->
-            ( { model | inputText = newInputText }
-            , getPrediction newInputText
-            )
+        ChangedInput "" ->
+            ( { model | inputText = "", result = typeSomething }, Cmd.none )
 
-        GotPrediction result ->
-            case result of
-                Ok prediction ->
-                    ( { model | prediction = prediction }, Cmd.none )
+        ChangedInput newInputText ->
+            ( { model | inputText = newInputText }, getPrediction newInputText )
 
-                Err _ ->
-                    ( model, Cmd.none )
+        GotPrediction (Ok prediction) ->
+            ( { model | result = Ok prediction }, Cmd.none )
+
+        GotPrediction (Err _) ->
+            ( { model | result = Err "Couldn't contact the API. Try again?" }, Cmd.none )
 
 
 getPrediction : String -> Cmd Msg
@@ -90,7 +94,7 @@ predictionResultDecoder : JD.Decoder PredictionResult
 predictionResultDecoder =
     JD.map2 PredictionResult
         (predictionDecoder |> JD.list |> JD.field "predictions")
-        (predictionMetaInfoDecoder |> JD.maybe |> JD.field "meta")
+        (predictionMetaInfoDecoder |> JD.field "meta")
 
 
 predictionDecoder : JD.Decoder Prediction
@@ -114,19 +118,13 @@ predictionMetaInfoDecoder =
 view : Model -> Html Msg
 view model =
     div []
-        [ viewNavBar
-        , viewTextArea model.inputText
-        , viewPredictionResult model.prediction
-        ]
+        [ viewNavBar, viewTextArea model.inputText, viewResult model.result ]
 
 
 viewTextArea : String -> Html Msg
 viewTextArea inputText =
     textarea
-        [ placeholder "Type or paste a text here!"
-        , value inputText
-        , onInput ChangeInput
-        ]
+        [ placeholder "Type or paste a text here!", value inputText, onInput ChangedInput ]
         []
 
 
@@ -142,18 +140,31 @@ viewNavBar =
         , li
             [ class "floatRight" ]
             [ a
-                [ href "https://github.com/datautvikling/nace-predictor"
-                , target "_blank"
-                ]
+                [ href "https://github.com/datautvikling/nace-predictor", target "_blank" ]
                 [ text "Code" ]
             ]
         ]
 
 
+viewResult : Result String PredictionResult -> Html Msg
+viewResult result =
+    case result of
+        Err error ->
+            p [] [ text error ]
+
+        Ok prediction ->
+            viewPredictionResult prediction
+
+
 viewPredictionResult : PredictionResult -> Html Msg
 viewPredictionResult result =
     div []
-        (List.map viewPrediction result.predictions)
+        (if List.isEmpty result.predictions then
+            [ p [] [ text "No good predictions 😞" ] ]
+
+         else
+            List.map viewPrediction result.predictions
+        )
 
 
 viewPrediction : Prediction -> Html Msg

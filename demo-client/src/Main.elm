@@ -29,7 +29,7 @@ debounceConfig =
 
 type alias Model =
     { inputText : String
-    , result : Response
+    , response : Response
     , debounce : Debounce String
     }
 
@@ -59,12 +59,12 @@ type alias PredictionMetaInfo =
 
 
 typeSomething =
-    "Type something to get predictions!"
+    Message "Type something to get predictions!"
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( Model "" (Message typeSomething) Debounce.init, Cmd.none )
+    ( Model "" typeSomething Debounce.init, Cmd.none )
 
 
 
@@ -72,8 +72,7 @@ init =
 
 
 type Msg
-    = NoOp
-    | ChangedInput String
+    = ChangedInput String
     | GotPrediction (Result Http.Error PredictionResult)
     | DebounceMsg Debounce.Msg
 
@@ -81,18 +80,15 @@ type Msg
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        NoOp ->
-            ( model, Cmd.none )
-
         ChangedInput "" ->
-            ( { model | inputText = "", result = Message typeSomething }, Cmd.none )
+            ( { model | inputText = "", response = typeSomething }, Cmd.none )
 
         ChangedInput newInputText ->
             let
                 ( debounce, cmd ) =
                     Debounce.push debounceConfig newInputText model.debounce
             in
-            ( { model | inputText = newInputText, debounce = debounce, result = Loading }
+            ( { model | inputText = newInputText, debounce = debounce, response = Loading }
             , cmd
             )
 
@@ -108,10 +104,10 @@ update msg model =
             ( { model | debounce = debounce }, cmd )
 
         GotPrediction (Ok prediction) ->
-            ( { model | result = Success prediction }, Cmd.none )
+            ( { model | response = Success prediction }, Cmd.none )
 
         GotPrediction (Err _) ->
-            ( { model | result = Message "Couldn't contact the API. Try again?" }, Cmd.none )
+            ( { model | response = Message "Couldn't contact the API. Try again?" }, Cmd.none )
 
 
 getPrediction : String -> Cmd Msg
@@ -155,7 +151,7 @@ predictionMetaInfoDecoder =
 view : Model -> Html Msg
 view model =
     div []
-        [ viewNavBar, viewTextArea model.inputText, viewResult model.result ]
+        [ viewNavBar, viewTextArea model.inputText, viewResult model.response ]
 
 
 viewTextArea : String -> Html Msg
@@ -198,29 +194,34 @@ viewResult response =
 
 viewPredictionResult : PredictionResult -> Html Msg
 viewPredictionResult result =
-    div []
-        (if List.isEmpty result.predictions then
-            [ p [] [ text "No good predictions 😞" ] ]
+    let
+        predictions =
+            case result.predictions of
+                [] ->
+                    [ p [] [ text "No good predictions 😞" ] ]
 
-         else
-            List.map viewPrediction result.predictions
-        )
+                pred ->
+                    List.map viewPrediction pred
+    in
+    div [] predictions
 
 
 viewPrediction : Prediction -> Html Msg
 viewPrediction prediction =
+    let
+        formatCode =
+            codeAndDescription >> text
+
+        formatConfidence =
+            (*) 100
+                >> floor
+                >> String.fromInt
+                >> (\i -> " (" ++ i ++ "%)")
+                >> text
+    in
     div [ class "prediction" ]
-        [ span [] [ prediction.code |> codeAndDescription |> text ]
-        , span []
-            [ prediction.confidence
-                |> (\f -> floor (f * 100))
-                |> (\i ->
-                        " ("
-                            ++ String.fromInt i
-                            ++ "%)"
-                   )
-                |> text
-            ]
+        [ span [] [ formatCode prediction.code ]
+        , span [] [ formatConfidence prediction.confidence ]
         ]
 
 

@@ -7,7 +7,7 @@ from app.infrastructure.model_provider import get_predictor
 AMOUNT_PARAM = "amount"
 DEFAULT_AMOUNT = 5
 THRESHOLD_PARAM = "threshold"
-DEFAULT_THRESHOLD = 0.1
+DEFAULT_THRESHOLD = 0
 
 api = Namespace("v1", description="Predict NACE codes.")
 

@@ -57,3 +57,14 @@ The application is a "plain" Flask Python app, and should be simple to package f
 use in other services (such as Kubernetes). 
 
 Files for App engine deployment (`app.yaml`, .`gcloudignore`) can be ignored safely.
+
+## Testing
+
+Unit tests are found in [tests](), where the folder structure matches that of the main application.
+
+For convenience (and CI/CD use), a script to discover and run all tests is included. 
+To execute it, run
+
+```bash
+python quality_check.py
+```

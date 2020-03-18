@@ -2,9 +2,12 @@ from dataclasses import dataclass
 
 from app.domain.predictor.predictor import Predictor, clean, Prediction, PredictionMetaInfo
 
+LABEL_PREFIX = "__label__ "
+
 
 @dataclass(frozen=True)
 class FastTextPredictor(Predictor):
+    """A predictor using a FastText model"""
 
     def predict(self, text, amount, threshold):
         cleaned_text = clean(text)
@@ -22,5 +25,5 @@ class FastTextPredictor(Predictor):
 
 
 def strip_prefix(label: str) -> str:
-    """Removes the '__label__' from FastText predictions"""
-    return label[9:]
+    """Removes the prefix from FastText predictions"""
+    return label[len(LABEL_PREFIX):]

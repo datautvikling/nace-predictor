@@ -70,7 +70,14 @@ class Prediction(Resource):
         text = request.json["text"]
         amount = _get_param(AMOUNT_PARAM, DEFAULT_AMOUNT, int)
         threshold = _get_param(THRESHOLD_PARAM, DEFAULT_THRESHOLD, float)
-        return to_model(get_predictor().predict(text, amount, threshold))
+
+        print(f"text='{text}' amount={amount}, threshold={threshold}")
+
+        response = to_model(get_predictor().predict(text, amount, threshold))
+
+        print(f"result={response}")
+
+        return response
 
 
 def _get_param(name, default_value, type_converter):

@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 from app.domain.predictor.predictor import Predictor, clean, Prediction, PredictionMetaInfo
 
-LABEL_PREFIX = "__label__ "
+LABEL_PREFIX = "__label__"
 
 
 @dataclass(frozen=True)

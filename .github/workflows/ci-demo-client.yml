@@ -20,7 +20,7 @@ jobs:
       uses: justgook/setup-elm@v1
     - name: Install create-elm-app code dependency
       run: |
-        npm install create-elm-app -g
+        npm install create-elm-app
     - name: Build 
       run: |
         cd demo-client

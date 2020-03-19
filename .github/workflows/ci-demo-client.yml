@@ -22,9 +22,8 @@ jobs:
       run: |
         cd demo-client
         npm install create-elm-app
-        npm install
     - name: Build 
       run: |
         cd demo-client
-        npx create-elm-app build
+        npx elm-app build
         

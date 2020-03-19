@@ -4,10 +4,10 @@ This is a simple web application that uses the NACE Predictor API to offer a pre
 
 ## Prerequisites
 
-The project is written in [Elm](https://elm-lang.org/), using [Create Elm App](https://github.com/halfzebra/create-elm-app).
+The project is written in [Elm](https://elm-lang.org/), bootstrapped with [Create Elm App](https://github.com/halfzebra/create-elm-app).
 
-Install Elm according to [the instructions](https://guide.elm-lang.org/install/elm.html), and `Create Elm App`
-according to the instructions in the previous link.
+Install Elm according to [the instructions](https://guide.elm-lang.org/install/elm.html) (and `Create Elm App` 
+for some additional features) according to the instructions in the previous link.
 
 ## Running the application
 

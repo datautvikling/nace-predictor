@@ -24,7 +24,7 @@ class Prediction:
 class PredictionMetaInfo:
     """Additional information about the prediction itself, such as the name of the model that produced it."""
     model: str
-    id: str = field(default_factory=uuid.uuid4)
+    id: str = field(default_factory=lambda: str(uuid.uuid4()))
 
 
 @dataclass(frozen=True)

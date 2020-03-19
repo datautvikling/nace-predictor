@@ -1,0 +1,29 @@
+name: Demo Client CI
+
+on:
+  push:
+    branches: [ master ]
+    paths:
+    - 'demo-client/**'
+  pull_request:
+    branches: [ master ]
+    paths:
+    - 'demo-client/**'
+
+jobs:
+   verify:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Elm
+      uses: justgook/setup-elm@v1
+    - name: Install create-elm-app core dependency
+      run: |
+        cd demo-client
+        npm install create-elm-app
+    - name: Build 
+      run: |
+        cd demo-client
+        npx elm-app build
+        

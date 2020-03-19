@@ -25,5 +25,5 @@ jobs:
     - name: Build 
       run: |
         cd demo-client
-        create-elm-app build
+        npx create-elm-app build
         

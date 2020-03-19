@@ -2,6 +2,7 @@ import json
 from typing import Dict
 
 from fasttext import load_model
+from google.cloud import storage
 
 from app.domain.model import ModelType, Model
 from app.domain.predictor.fasttext_predictor import FastTextPredictor
@@ -38,20 +39,32 @@ def get_predictor(configuration: Dict = None) -> Predictor:
 def _load_predictor(config):
     model_config = config["model"]
     model_type = ModelType(model_config["type"])
+    artifact_type = model_config["artifactType"]
 
-    # TODO more specific errors
     if not model_type == ModelType.fast_text:
-        raise Exception("Only FastText is currently supported")
+        raise ModelLoadingException("Only model type FastText is currently supported")
 
-    if model_config["artifactType"] == "LocalFile":
-        fast_text_model = load_model(model_config["artifactInfo"]["path"])
+    if artifact_type == "LocalFile":
+        path = model_config["artifactInfo"]["path"]
+    elif artifact_type == "GCPStorage":
+        gcp_path = model_config["artifactInfo"]["path"]
+
+        path = "data/model.bin"
+        with open(path, 'ab') as file:  # We don't expect this file to already exist, so create it to prepare download
+            storage.Client().download_blob_to_file(gcp_path, file)
     else:
-        raise Exception("Couldn't load model")
+        raise ModelLoadingException(f"Could not load unknown artifact type '{artifact_type}'")
 
     model = Model(
         model_type,
         model_config["name"],
-        fast_text_model
+        load_model(path)
     )
 
     return FastTextPredictor(model)
+
+
+class ModelLoadingException(Exception):
+
+    def __init__(self, message):
+        super().__init__(message)

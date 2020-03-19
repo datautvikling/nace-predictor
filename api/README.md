@@ -14,10 +14,10 @@ pip install -r requirements.txt
 
 ## Application configuration
 
-The app is configured through the `config.json` file.
+The app is configured through the [configuration file](config.json).
 
 While a `config.json` file is provided in the code, this should be considered a default.
-A custom configuration is expected to be provided on deployment 
+A custom configuration is expected to be provided on deployment. 
 
 ### Configuration elements
 
@@ -26,6 +26,21 @@ A custom configuration is expected to be provided on deployment
 Information about the underlying ML model the API should use. It contains model metadata
 such as the name of the model, and where the binary is located.
 
+Supported model types:
+- FastText
+
+Supported artifact types:
+- LocalFile
+- GCPStorage
+
+Both artifact types require an `artifactInfo` element with a `path` field, where
+`path` points to where the artifact is located (either on the local file system or in GCP storage).
+
+Note that when using a GCP storage artifact type, the file must either be publicly accessible,
+or accessible with the  credentials the application is running with (e.g. by [setting application 
+default credentials](https://cloud.google.com/sdk/gcloud/reference/auth/application-default/login)
+on your machine when running locally). 
+ 
 ## Running the application
 
 ### Locally
@@ -62,7 +77,7 @@ Files for App engine deployment (`app.yaml`, .`gcloudignore`) can be ignored saf
 
 Unit tests are found in [tests](), where the folder structure matches that of the main application.
 
-For convenience (and CI/CD use), a script to discover and run all tests is included. 
+For convenience (and CI/CD use), [a script](quality_check.py) to discover and run all tests is included. 
 To execute it, run
 
 ```bash

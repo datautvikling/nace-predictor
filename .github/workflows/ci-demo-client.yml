@@ -18,10 +18,11 @@ jobs:
     - uses: actions/checkout@v2
     - name: Set up Elm
       uses: justgook/setup-elm@v1
-    - name: Install create-elm-app code dependency
+    - name: Install create-elm-app core dependency
       run: |
         cd demo-client
         npm install create-elm-app
+        npm install
     - name: Build 
       run: |
         cd demo-client

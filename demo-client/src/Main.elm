@@ -2,13 +2,11 @@ module Main exposing (..)
 
 import Browser
 import Debounce exposing (Debounce)
-import Html exposing (Html, a, div, li, ol, p, span, text, textarea)
+import Html exposing (Html, a, div, li, ol, p, text, textarea)
 import Html.Attributes exposing (class, href, placeholder, target, value)
 import Html.Events exposing (onInput)
 import Http
-import Json.Decode as JD
-import Json.Encode as JE
-import NaceCodes exposing (codeAndDescription)
+import Prediction exposing (PredictionResult, getPrediction, viewPredictionResult)
 import Result exposing (Result)
 
 
@@ -21,10 +19,6 @@ debounceConfig =
     { strategy = Debounce.later 500
     , transform = DebounceMsg
     }
-
-
-
----- MODEL ----
 
 
 type alias Model =
@@ -40,24 +34,6 @@ type Response
     | Success PredictionResult
 
 
-type alias PredictionResult =
-    { predictions : List Prediction
-    , meta : PredictionMetaInfo
-    }
-
-
-type alias Prediction =
-    { code : String
-    , confidence : Float
-    }
-
-
-type alias PredictionMetaInfo =
-    { id : String
-    , model : String
-    }
-
-
 typeSomething =
     Message "Type something to get predictions!"
 
@@ -65,10 +41,6 @@ typeSomething =
 init : ( Model, Cmd Msg )
 init =
     ( Model "" typeSomething Debounce.init, Cmd.none )
-
-
-
----- UPDATE ----
 
 
 type Msg
@@ -97,7 +69,7 @@ update msg model =
                 ( debounce, cmd ) =
                     Debounce.update
                         debounceConfig
-                        (Debounce.takeLast getPrediction)
+                        (Debounce.takeLast (getPrediction apiPath GotPrediction))
                         bouncedMsg
                         model.debounce
             in
@@ -108,44 +80,6 @@ update msg model =
 
         GotPrediction (Err _) ->
             ( { model | response = Message "Couldn't contact the API. Try again?" }, Cmd.none )
-
-
-getPrediction : String -> Cmd Msg
-getPrediction queryText =
-    Http.post
-        { url = apiPath ++ "v1/prediction"
-        , body = queryText |> queryTextEncoder |> Http.jsonBody
-        , expect = Http.expectJson GotPrediction predictionResultDecoder
-        }
-
-
-queryTextEncoder queryText =
-    JE.object [ ( "text", JE.string queryText ) ]
-
-
-predictionResultDecoder : JD.Decoder PredictionResult
-predictionResultDecoder =
-    JD.map2 PredictionResult
-        (predictionDecoder |> JD.list |> JD.field "predictions")
-        (predictionMetaInfoDecoder |> JD.field "meta")
-
-
-predictionDecoder : JD.Decoder Prediction
-predictionDecoder =
-    JD.map2 Prediction
-        (JD.field "code" JD.string)
-        (JD.field "confidence" JD.float)
-
-
-predictionMetaInfoDecoder : JD.Decoder PredictionMetaInfo
-predictionMetaInfoDecoder =
-    JD.map2 PredictionMetaInfo
-        (JD.field "id" JD.string)
-        (JD.field "model" JD.string)
-
-
-
----- VIEW ----
 
 
 view : Model -> Html Msg
@@ -190,43 +124,6 @@ viewResult response =
 
         Success prediction ->
             viewPredictionResult prediction
-
-
-viewPredictionResult : PredictionResult -> Html Msg
-viewPredictionResult result =
-    let
-        predictions =
-            case result.predictions of
-                [] ->
-                    [ p [] [ text "No good predictions 😞" ] ]
-
-                pred ->
-                    List.map viewPrediction pred
-    in
-    div [] predictions
-
-
-viewPrediction : Prediction -> Html Msg
-viewPrediction prediction =
-    let
-        formatCode =
-            codeAndDescription >> text
-
-        formatConfidence =
-            (*) 100
-                >> floor
-                >> String.fromInt
-                >> (\i -> " (" ++ i ++ "%)")
-                >> text
-    in
-    div [ class "prediction" ]
-        [ span [] [ formatCode prediction.code ]
-        , span [] [ formatConfidence prediction.confidence ]
-        ]
-
-
-
----- PROGRAM ----
 
 
 main : Program () Model Msg

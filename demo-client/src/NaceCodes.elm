@@ -1,4 +1,4 @@
-module NaceCodes exposing (..)
+module NaceCodes exposing (codeAndDescription)
 
 import Dict exposing (Dict)
 import Maybe exposing (withDefault)

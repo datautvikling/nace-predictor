@@ -1,3 +1,6 @@
+import json
+import logging
+
 from flask import request
 from flask_restx import Namespace, fields, Resource
 
@@ -71,14 +74,24 @@ class Prediction(Resource):
         amount = _get_param(AMOUNT_PARAM, DEFAULT_AMOUNT, int)
         threshold = _get_param(THRESHOLD_PARAM, DEFAULT_THRESHOLD, float)
 
-        print(f"text='{text}' amount={amount}, threshold={threshold}")
+        result = to_model(get_predictor().predict(text, amount, threshold))
 
-        response = to_model(get_predictor().predict(text, amount, threshold))
+        _log_prediction(text, amount, threshold, result)
 
-        print(f"result={response}")
-
-        return response
+        return result
 
 
 def _get_param(name, default_value, type_converter):
     return type_converter(request.args[name]) if name in request.args else default_value
+
+
+def _log_prediction(text, amount, threshold, result):
+    # Use JSON dumps to ensure we follow JSON standard (default print of dict uses single quotes, etc.)
+    logging.info(json.dumps({
+        "request": {
+            "text": text,
+            "amount": amount,
+            "threshold": threshold
+        },
+        "response": result
+    }))

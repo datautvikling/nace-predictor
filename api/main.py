@@ -1,3 +1,4 @@
+import google.cloud.logging
 from flask import Flask, redirect
 from flask_cors import CORS
 
@@ -16,3 +17,8 @@ def redirect_to_api():
 
 if __name__ == '__main__':
     app.run(debug=True)
+else:
+    # Assume we're running in GCP, configure logging.
+    # For other environments, this code should be removed.
+    client = google.cloud.logging.Client()
+    client.setup_logging()

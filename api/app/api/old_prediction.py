@@ -1,7 +1,7 @@
 from flask import request
 from flask_restx import Resource, Namespace, fields
 
-from app.domain.predictor.predictor import Prediction
+from app.domain.predictor.predictor import Prediction, PredictionDescription
 from app.infrastructure.model_provider import get_predictor
 
 api = Namespace("v0", description="Predict NACE codes by text (deprecated)")
@@ -31,4 +31,4 @@ class DeprecatedPrediction(Resource):
     @api.param("q", "The text to predict a NACE code for", type="string")
     def get():
         q = request.args["q"]  # I would much prefer to receive this as an argument, but that's apparently not easy
-        return to_model(get_predictor().predict(q, 5, 0))
+        return to_model(get_predictor().predict(PredictionDescription(q), 5, 0))

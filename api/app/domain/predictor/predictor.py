@@ -4,7 +4,7 @@ import string
 import uuid
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
-from typing import List, Tuple
+from typing import List, Tuple, Optional
 
 from app.domain.model import Model
 
@@ -28,17 +28,24 @@ class PredictionMetaInfo:
 
 
 @dataclass(frozen=True)
+class PredictionDescription:
+    """Description of a prediction to perform."""
+    text: str
+    orgform: Optional[str] = None
+
+
+@dataclass(frozen=True)
 class Predictor(ABC):
     """A predictor provides prediction services based on an ML model"""
 
     model: Model
 
     @abstractmethod
-    def predict(self, text: str, amount: int, threshold: float) -> Prediction:
+    def predict(self, description: PredictionDescription, amount: int, threshold: float) -> Prediction:
         """
-        Make a prediction based on provided text.
+        Make a prediction based on a provided description.
 
-        :param text: the text to predict based on.
+        :param description: description of the prediction to perform. E.g. the text to predict based on.
         :param amount: the amount of predictions to get
         :param threshold: the threshold (0 - 1.0) of confidence required to include a specific prediction.
         :return: a prediction.

@@ -1,0 +1,11 @@
+-- Add as a calculated field to the view produced by the query in
+-- ../bigquery/view_predictions.sql to support histogram visualisation of the 
+-- prediction confidences
+
+CASE 
+WHEN best_prediction.confidence > 0 AND best_prediction.confidence <= 0.2 THEN "0 - 0,2"
+WHEN best_prediction.confidence > 0.2 AND best_prediction.confidence <= 0.4 THEN "0,2 - 0,4"
+WHEN best_prediction.confidence > 0.4 AND best_prediction.confidence <= 0.6 THEN "0,4 - 0,6"
+WHEN best_prediction.confidence > 0.6 AND best_prediction.confidence <= 0.8 THEN "0,6 - 0,8"
+ELSE "0,8 - 1,0"
+END

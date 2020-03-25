@@ -22,7 +22,7 @@ A CLI utility for training models. See [README.md](training-util/README.md).
 
 ### analysis
 
-Not an application in itself, but a collectionof scripts/queries used to analyse 
+Not an application in itself, but a collection of scripts/queries used to analyse 
 results produced by use of the model and API.
 
 ## Training, providing and using a model

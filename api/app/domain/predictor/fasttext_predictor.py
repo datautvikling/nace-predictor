@@ -9,8 +9,8 @@ LABEL_PREFIX = "__label__"
 class FastTextPredictor(Predictor):
     """A predictor using a FastText model"""
 
-    def predict(self, text, amount, threshold):
-        cleaned_text = clean(text)
+    def predict(self, description, amount, threshold):
+        cleaned_text = clean(description.text)
 
         meta_info = PredictionMetaInfo(self.model_name())
 

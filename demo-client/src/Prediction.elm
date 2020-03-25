@@ -21,9 +21,7 @@ type alias Prediction =
 
 
 type alias PredictionMetaInfo =
-    { id : String
-    , model : String
-    }
+    { id : String }
 
 
 getPrediction path resultType queryText =
@@ -51,9 +49,8 @@ predictionDecoder =
 
 
 predictionMetaInfoDecoder =
-    JD.map2 PredictionMetaInfo
+    JD.map PredictionMetaInfo
         (JD.field "id" JD.string)
-        (JD.field "model" JD.string)
 
 
 viewPredictionResult result =

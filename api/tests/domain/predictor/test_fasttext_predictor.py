@@ -4,6 +4,7 @@ from typing import Any
 
 from app.domain.model import Model, ModelType
 from app.domain.predictor.fasttext_predictor import strip_prefix, LABEL_PREFIX, FastTextPredictor
+from app.domain.predictor.predictor import PredictionDescription
 
 
 @dataclass(frozen=True)
@@ -27,7 +28,7 @@ class TestFastTextPredictor(unittest.TestCase):
 
         dummy_model = Model(ModelType.fast_text, "dummy model", DummyPredictionProvider(raw_prediction))
 
-        actual_prediction = FastTextPredictor(dummy_model).predict("just a test!", 5, 0)
+        actual_prediction = FastTextPredictor(dummy_model).predict(PredictionDescription("just a test!"), 5, 0)
 
         expected_predictions = [(pred_1_code, pred_1_conf), (pred_2_code, pred_2_conf)]
 
@@ -36,7 +37,7 @@ class TestFastTextPredictor(unittest.TestCase):
     def text_prediction_adds_meta_info(self):
         dummy_model = Model(ModelType.fast_text, "dummy model", DummyPredictionProvider(([], [])))
 
-        actual_prediction = FastTextPredictor(dummy_model).predict("just a test!", 5, 0)
+        actual_prediction = FastTextPredictor(dummy_model).predict(PredictionDescription("just a test!"), 5, 0)
 
         actual_meta_info = actual_prediction.meta
 

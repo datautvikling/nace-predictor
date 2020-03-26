@@ -26,14 +26,13 @@ prediction = api.model("Prediction", {
         description="The confidence the model has in this prediction "
                     "(a decimal number between 0 and 1.0, representing 0% to 100%, "
                     "where 0 is very unlikely to be a good prediction, and 1.0 is most likely).",
-        example="0.78")
+        example=0.78)
 })
 
 meta = api.model("Meta", {
-    "id": fields.String(description="The unique id of this prediction. "
-                                    "Used to trace the prediction and its usage.",
+    "id": fields.String(description="The unique id of this prediction. Used to trace the prediction and its usage.",
                         example="9ee55f88-51f9-4891-ac1a-26751522a5b1"),
-    "model": fields.String(description="The unique id of the model used to make this prediction")
+    "model": fields.String(description="The unique id of the model used to make this prediction", example="Skynet")
 })
 
 pred_response_model = api.model("PredictionWithMetaInfo", {

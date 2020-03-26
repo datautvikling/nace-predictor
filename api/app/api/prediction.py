@@ -32,7 +32,8 @@ prediction = api.model("Prediction", {
 meta = api.model("Meta", {
     "id": fields.String(description="The unique id of this prediction. "
                                     "Used to trace the prediction and its usage.",
-                        example="9ee55f88-51f9-4891-ac1a-26751522a5b1")
+                        example="9ee55f88-51f9-4891-ac1a-26751522a5b1"),
+    "model": fields.String(description="The unique id of the model used to make this prediction")
 })
 
 pred_response_model = api.model("PredictionWithMetaInfo", {
@@ -58,6 +59,7 @@ def to_model(pred: Prediction):
         "predictions": predictions,
         "meta": {
             "id": pred.meta.id,
+            "model": pred.meta.model
         }
     }
 

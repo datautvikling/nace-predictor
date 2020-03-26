@@ -1,0 +1,16 @@
+-- Add as a calculated field to the view produced by the query in
+-- ../bigquery/view_prediction_usage.sql to give a "score" to a
+-- prediction usage. Higher scores are better. Exactly how scores
+-- should be calculates is not trivial to decide, and depends e.g.
+-- on how much important we want to put on getting the FIRST prediction
+-- right, versus e.g. getting any prediction right.
+
+
+CASE
+WHEN usage.index IS null THEN 0
+WHEN usage.index = 0 then 25
+WHEN usage.index = 1 then 15
+WHEN usage.index = 2 then 10
+WHEN usage.index = 3 then 8
+WHEN usage.index = 4 then 5
+END

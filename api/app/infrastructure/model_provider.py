@@ -8,7 +8,7 @@ from app.domain.model import ModelType, Model
 from app.domain.predictor.fasttext_predictor import FastTextPredictor
 from app.domain.predictor.predictor import Predictor
 
-# Global value that holds the currently used model
+# Global value that holds the currently used predictor
 _predictor = None
 
 

@@ -1,10 +1,12 @@
 import json
 import logging
+from base64 import b64decode
 
 from flask import request
 from flask_restx import Namespace, fields, Resource
 
 from app.domain.predictor.predictor import Prediction, PredictionDescription
+from app.infrastructure.auth_provider import is_authorized
 from app.infrastructure.model_provider import get_predictor
 
 ORGFORM_FIELD_NAME = "orgform"
@@ -73,6 +75,7 @@ def to_model(pred: Prediction):
 class Prediction(Resource):
 
     @staticmethod
+    @api.doc(security=None)
     @api.marshal_with(pred_response_model, mask=False)
     @api.expect(pred_request_model)
     @api.param(AMOUNT_PARAM, "The amount of predictions to get", type="int", default=DEFAULT_AMOUNT)
@@ -105,7 +108,8 @@ usage_request_model = api.model("UsageRequest", {
 @api.route("/usage/<string:id>")
 @api.doc(description="Indicate that a specific prediction was used, and how it was used. "
                      "Clients should respond to this resource after requesting and using a "
-                     "prediction from /prediction.")
+                     "prediction from /prediction. Clients must be authorized for the "
+                     "usage to be registered.")
 @api.param("id", "ID of the prediction response that was used. This is the 'meta.id' field from the /prediction "
                  "resource response.")
 class Usage(Resource):
@@ -113,13 +117,24 @@ class Usage(Resource):
     @staticmethod
     @api.expect(usage_request_model)
     @api.response(204, "The usage was successfully logged.")
+    @api.response(401, "Unauthorized. Provide valid credentials to use this resource.")
     def post(id):
+        if not _valid_auth():
+            return "", 401
+
         actual_code = request.json[ACTUAL_CODE_FIELD_NAME]
         index = request.json.get(INDEX_FIELD_NAME)
 
         _log_usage(id, actual_code, index)
 
         return "", 204
+
+
+def _valid_auth() -> bool:
+    encoded_auth_header = request.headers['Authorization'].split()[1]
+    username, password = b64decode(encoded_auth_header).decode("utf-8").split(":")
+
+    return is_authorized(username, password)
 
 
 def _get_param(name, default_value, type_converter):

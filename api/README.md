@@ -17,7 +17,7 @@ pip install -r requirements.txt
 The app is configured through the [configuration file](config.json).
 
 While a `config.json` file is provided in the code, this should be considered a default.
-A custom configuration is expected to be provided on deployment. 
+A custom configuration is expected to be provided on deployment.
 
 ### Configuration elements
 
@@ -40,6 +40,10 @@ Note that when using a GCP storage artifact type, the file must either be public
 or accessible with the  credentials the application is running with (e.g. by [setting application 
 default credentials](https://cloud.google.com/sdk/gcloud/reference/auth/application-default/login)
 on your machine when running locally). 
+ 
+### Auth
+
+Information about users that are authorized to use the "usage reporting" functionality of the application. 
  
 ## Running the application
 

@@ -6,12 +6,24 @@ from app.api.prediction import api as v1_api
 
 API_BLUEPRINT = Blueprint('api', __name__)
 
+authorizations = {
+    'Basic Auth': {
+        'type': 'basic',
+        'in': 'header',
+        'name': 'Authorization'
+    },
+}
 API = Api(
     API_BLUEPRINT,
     title='NACE Prediction API',
     version='0.0.1',
-    description='An API for predicting NACE codes. Use the v1 namespace, as v0 is deprecated.'
+    description='An API for predicting NACE codes. Use the v1 namespace, as v0 is deprecated.',
+    security='Basic Auth',
+    authorizations=authorizations
 )
+
 
 API.add_namespace(v0_api)
 API.add_namespace(v1_api)
+
+

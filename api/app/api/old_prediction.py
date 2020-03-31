@@ -27,6 +27,7 @@ class DeprecatedPrediction(Resource):
 
     @staticmethod
     @api.deprecated
+    @api.doc(security=None)
     @api.marshal_with(model, as_list=True, mask=False)
     @api.param("q", "The text to predict a NACE code for", type="string")
     def get():

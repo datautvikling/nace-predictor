@@ -25,6 +25,8 @@ def process(config: Config):
         labeled_data = data[["tekst", "nace_1"]].copy()
         # AutoML does not allow . in label texts, so replace with _
         labeled_data["nace_1"] = labeled_data["nace_1"].str.replace(".", "_")
+        # AutoML does not allow duplicate content, so keep only the first instance of a text
+        labeled_data.drop_duplicates(subset="tekst", inplace=True)
 
     logging.info("Storing as " + config.path_to(PROCESSED_DATA_FILE_NAME))
 

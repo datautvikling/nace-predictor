@@ -22,10 +22,9 @@ def process(config: Config):
 
         labeled_data = data.apply(row_labeler, axis=1)
     else:  # Assume AutoML type
-        labeled_data = data[["tekst", "nace_1"]]
-        # The first column indicates training/testing/validation splits, leave it empty
-        # to let AutoML split it automatically
-        # labeled_data.insert(loc=0, column="split", value="")
+        labeled_data = data[["tekst", "nace_1"]].copy()
+        # AutoML does not allow . in label texts, so replace with _
+        labeled_data["nace_1"] = labeled_data["nace_1"].str.replace(".", "_")
 
     logging.info("Storing as " + config.path_to(PROCESSED_DATA_FILE_NAME))
 

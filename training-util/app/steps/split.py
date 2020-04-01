@@ -4,7 +4,7 @@ import logging
 import pandas as pd
 from sklearn.model_selection import train_test_split
 
-from app.config import Config
+from app.config import Config, ModelType
 from app.constants import PROCESSED_DATA_FILE_NAME, TRAINING_SET_FILE_NAME, TESTING_SET_FILE_NAME
 
 
@@ -12,6 +12,10 @@ def split(config: Config):
     """
     Split the data into training and testing sets.
     """
+
+    if config.type == ModelType.automl:
+        logging.debug("Skipping because of model type")
+        return
 
     data = pd.read_csv(config.path_to(PROCESSED_DATA_FILE_NAME))
 

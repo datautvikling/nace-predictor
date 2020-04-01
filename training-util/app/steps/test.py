@@ -1,10 +1,10 @@
 import logging
+
 import math
-
-from fasttext import load_model
 import pandas as pd
+from fasttext import load_model
 
-from app.config import Config
+from app.config import Config, ModelType
 from app.constants import MODEL_FILE_NAME, TESTING_SET_FILE_NAME, TEST_RESULTS_FILE_NAME
 
 
@@ -12,6 +12,10 @@ def test(config: Config):
     """
     Test a FastText model.
     """
+
+    if config.type == ModelType.automl:
+        logging.debug("Skipping because of model type")
+        return
 
     model = load_model(config.path_to(MODEL_FILE_NAME))
     logging.debug("Testing model")

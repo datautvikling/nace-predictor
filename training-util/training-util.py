@@ -3,7 +3,7 @@ from argparse import ArgumentParser
 from pathlib import Path
 from typing import List
 
-from app.config import Config
+from app.config import Config, ModelType
 from app.steps.assemble import assemble
 from app.steps.gather import gather
 from app.steps.preprocess import preprocess
@@ -46,6 +46,9 @@ def parse_arguments(step_names: List[str]):
                         action="store", default="data",
                         help="Set the directory to read and write files in, relative to where the util is run. "
                              + "Default is 'data'.")
+    parser.add_argument("--type",
+                        action="store", choices=["fasttext", "automl"], default="fasttext",
+                        help="The type of model to train (or prepare data for). Default is 'fasttext'.")
     parser.add_argument("--from-step",
                         action="store", choices=step_names, default=step_names[0],
                         help="Set the step to start from, skipping those that precede it.")
@@ -62,7 +65,7 @@ def parse_arguments(step_names: List[str]):
 if __name__ == '__main__':
     args = parse_arguments([step[0] for step in ALL_STEPS])
 
-    config = Config(args.working_dir)
+    config = Config(args.working_dir, ModelType(args.type))
     # Make sure the working dir exists
     Path(args.working_dir).mkdir(parents=True, exist_ok=True)
 

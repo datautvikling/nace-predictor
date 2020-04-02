@@ -3,7 +3,7 @@ import logging
 from fasttext import train_supervised
 
 from app.config import Config, ModelType
-from app.constants import TRAINING_SET_FILE_NAME, MODEL_FILE_NAME
+from app.constants import TRAINING_SET_FILE_NAME, MODEL_FILE_NAME, TESTING_SET_FILE_NAME
 
 
 def train(config: Config):

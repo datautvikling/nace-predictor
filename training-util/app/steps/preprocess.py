@@ -20,9 +20,12 @@ def preprocess(config: Config):
     data = data[data["tekst"].apply(lambda t: len(t) > 4)]
 
     logging.debug("Tokenizing")
-    data["tekst"] = data["tekst"].map(lambda t: _tokenize(t))
+    data["tekst"] = data["tekst"].map(_tokenize)
 
-    logging.debug(f"Pre-processed {len(data)} rows")
+    logging.debug("Dropping 'konkursbo'")
+    data = data[data["tekst"].apply(lambda t: t != "konkursbo")]
+
+    logging.debug(f"Pre-processed to {len(data)} rows")
 
     logging.info("Storing as " + config.path_to(PREPROCESSED_DATA_FILE_NAME))
 
@@ -31,7 +34,8 @@ def preprocess(config: Config):
 
 def _tokenize(s: str) -> str:
     lower = s.lower()
-    split = lower.split()
-    stripped = [word.translate(str.maketrans('', '', string.punctuation)) for word in split]
+    # This looks a bit weird - split and join twice to also remove any extra spaces added by weird
+    # puncuation use, such as 'this , is a text !'
+    no_punctuation = [word.translate(str.maketrans('', '', string.punctuation)) for word in lower.split()]
 
-    return " ".join(stripped)
+    return " ".join(" ".join(no_punctuation).split())

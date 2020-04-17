@@ -3,10 +3,21 @@ from flask import Flask, redirect
 from flask_cors import CORS
 
 from app.api import API_BLUEPRINT
+from app.infrastructure.model_provider import get_predictor
 
 app = Flask(__name__)
 app.register_blueprint(API_BLUEPRINT, url_prefix='/api')
 CORS(app)
+
+
+@app.route("/_ah/warmup")
+def warmup():
+    """Warms up the application"""
+    # Getting a predictor means the underlying model is loaded.
+    # This is expected to be the most costly "startup-action", so
+    # when it is completed an instance should be sufficiently warmed up
+    get_predictor()
+    return "Warmed up!", 200
 
 
 @app.route("/")

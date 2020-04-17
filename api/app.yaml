@@ -1,2 +1,6 @@
 runtime: python37
 service: api
+inbound_services:
+  - warmup
+automatic_scaling:
+  min_idle_instances: automatic

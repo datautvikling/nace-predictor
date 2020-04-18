@@ -1,5 +1,6 @@
-ENHET_NACE_FILE_NAME = 'nacekoder.tab'
-ENHET_FORMAAL_FILE_NAME = 'formaal.tab'
+ENHET_NACE_CSV_FILE_NAME = 'nacekoder.tab'
+ENHET_FORMAAL_CSV_FILE_NAME = 'formaal.tab'
+NACE_EXCEL_FILE_NAME = 'nace.xlsx'
 ASSEMBLED_DATA_FILE_NAME = 'assembled_data.csv'
 PREPROCESSED_DATA_FILE_NAME = 'preprocessed_data.csv'
 PROCESSED_DATA_FILE_NAME = 'processed_data.csv'

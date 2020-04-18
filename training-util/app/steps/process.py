@@ -11,21 +11,21 @@ def process(config: Config):
     Process the data into the desired (algorithm-specific) format.
     """
 
-    data = pd.read_csv(config.path_to(PREPROCESSED_DATA_FILE_NAME), dtype={"nace_1": str})
+    data = pd.read_csv(config.path_to(PREPROCESSED_DATA_FILE_NAME), dtype={"nace1": str})
 
     logging.debug("Labeling")
 
-    if config.type == ModelType.fasttext:
+    if config.model_type == ModelType.fasttext:
         def row_labeler(row):
             # Fasttext reads the label per row as "__label__<label text>"
-            return row["tekst"] + f" __label__{row['nace_1']}"
+            return row["aktivitet"] + f" __label__{row['nace1']}"
 
         labeled_data = data.apply(row_labeler, axis=1)
     else:  # Assume AutoML type
-        labeled_data = data[["tekst", "nace_1"]].copy()
+        labeled_data = data[["aktivitet", "nace1"]].copy()
 
         # AutoML does not allow duplicate content, so keep only the first instance of a text
-        labeled_data.drop_duplicates(subset="tekst", inplace=True)
+        labeled_data.drop_duplicates(subset="aktivitet", inplace=True)
 
         # AutoML requires at least 10 examples per label, so drop those with fewer occurrences.
         # This means we miss out on quite a few labels, which is unfortunate, but
@@ -33,7 +33,7 @@ def process(config: Config):
         labeled_data = labeled_data[labeled_data.groupby('nace_1').tekst.transform(len) > 10]
 
         # AutoML does not allow . in label texts, so replace with _
-        labeled_data["nace_1"] = labeled_data["nace_1"].str.replace(".", "_")
+        labeled_data["nace1"] = labeled_data["nace1"].str.replace(".", "_")
 
     logging.debug(f"Processed to {len(labeled_data)} rows")
 

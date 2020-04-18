@@ -3,7 +3,7 @@ import logging
 from fasttext import train_supervised
 
 from app.config import Config, ModelType
-from app.constants import TRAINING_SET_FILE_NAME, MODEL_FILE_NAME, TESTING_SET_FILE_NAME
+from app.constants import TRAINING_SET_FILE_NAME, MODEL_FILE_NAME
 
 
 def train(config: Config):
@@ -11,7 +11,7 @@ def train(config: Config):
     Train FastText model.
     """
 
-    if config.type == ModelType.automl:
+    if config.model_type == ModelType.automl:
         logging.debug("Skipping because of model type")
         return
 

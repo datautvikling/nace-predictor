@@ -3,7 +3,7 @@ from argparse import ArgumentParser
 from pathlib import Path
 from typing import List
 
-from app.config import Config, ModelType
+from app.config import Config, ModelType, InputType
 from app.steps.assemble import assemble
 from app.steps.gather import gather
 from app.steps.preprocess import preprocess
@@ -46,7 +46,12 @@ def parse_arguments(step_names: List[str]):
                         action="store", default="data",
                         help="Set the directory to read and write files in, relative to where the util is run. "
                              + "Default is 'data'.")
-    parser.add_argument("--type",
+    parser.add_argument("--input-type",
+                        action="store", choices=["csv", "xls"], default="csv",
+                        help="Training data input type. Either two downloadable csv files, or a "
+                             "complete Excel (xls) file which must be provided in the working dir. "
+                             "Default is 'csv'.")
+    parser.add_argument("--model-type",
                         action="store", choices=["fasttext", "automl"], default="fasttext",
                         help="The type of model to train (or prepare data for). Default is 'fasttext'.")
     parser.add_argument("--from-step",
@@ -65,7 +70,8 @@ def parse_arguments(step_names: List[str]):
 if __name__ == '__main__':
     args = parse_arguments([step[0] for step in ALL_STEPS])
 
-    config = Config(args.working_dir, ModelType(args.type))
+    config = Config(args.working_dir, InputType(args.input_type), ModelType(args.model_type))
+
     # Make sure the working dir exists
     Path(args.working_dir).mkdir(parents=True, exist_ok=True)
 

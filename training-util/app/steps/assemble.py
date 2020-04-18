@@ -30,12 +30,15 @@ def read_excel(config: Config) -> DataFrame:
     # for "85.599" or "rounded" labels like "71.1" for "71.100"
     converters = {NACE1_FIELD_NAME: str, NACE2_FIELD_NAME: str, NACE3_FIELD_NAME: str}
 
-    data = pd.read_excel(config.path_to(NACE_EXCEL_FILE_NAME), converters=converters)
+    # Reading with sheet name None should read all sheets in the workbook
+    excel_data = pd.read_excel(config.path_to(NACE_EXCEL_FILE_NAME), converters=converters, sheet_name=None)
+    data = pd.concat(excel_data)
     logging.debug(f"Read {len(data)} lines from Excel file")
 
     # Some cells may be parsed as empty, set these to some string to allow the grouping to work
     data = data.fillna(" ")
 
+    logging.debug("Grouping Excel rows by combining aktivitet-tekst")
     grouping_fields = [ORGNR_FIELD_NAME, NACE1_FIELD_NAME, NACE2_FIELD_NAME, NACE3_FIELD_NAME]
     data = data.groupby(grouping_fields)[AKTIVITET_FIELD_NAME].apply(lambda x: " ".join(x)).reset_index()
 
@@ -48,7 +51,7 @@ def read_and_combine_csv(config: Config) -> DataFrame:
     enhet_nace = _read_nace_data(config.path_to(ENHET_NACE_CSV_FILE_NAME))
     enhet_formaal = _read_formaal_data(config.path_to(ENHET_FORMAAL_CSV_FILE_NAME))
 
-    logging.debug(f"Merging data")
+    logging.debug("Merging data")
 
     return pd.merge(enhet_formaal, enhet_nace, on=ORGNR_FIELD_NAME, how="inner")
 

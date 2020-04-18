@@ -41,7 +41,7 @@ def test(config: Config):
 
     means = test_df[test_df["accuracy"] != 0].mean()
 
-    logging.debug("Mean for labels with prediction (precision, recall, accuracy: ")
+    logging.debug("Mean for labels with prediction (precision, recall, accuracy):")
     logging.debug(means["precision"])
     logging.debug(means["recall"])
     logging.debug(means["accuracy"])

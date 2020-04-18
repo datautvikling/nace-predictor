@@ -13,7 +13,7 @@ def test(config: Config):
     Test a FastText model.
     """
 
-    if config.type == ModelType.automl:
+    if config.model_type == ModelType.automl:
         logging.debug("Skipping because of model type")
         return
 

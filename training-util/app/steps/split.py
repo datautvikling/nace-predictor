@@ -13,7 +13,7 @@ def split(config: Config):
     Split the data into training and testing sets.
     """
 
-    if config.type == ModelType.automl:
+    if config.model_type == ModelType.automl:
         logging.debug("Skipping because of model type")
         return
 

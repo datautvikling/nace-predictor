@@ -8,3 +8,9 @@ TRAINING_SET_FILE_NAME = 'training_set.csv'
 TESTING_SET_FILE_NAME = 'testing_set.csv'
 TEST_RESULTS_FILE_NAME = 'test_results.csv'
 MODEL_FILE_NAME = "model.ftz"
+
+ORGNR_FIELD_NAME = "orgnr"
+NACE1_FIELD_NAME = "nace1"
+NACE2_FIELD_NAME = "nace2"
+NACE3_FIELD_NAME = "nace3"
+AKTIVITET_FIELD_NAME = "aktivitet"

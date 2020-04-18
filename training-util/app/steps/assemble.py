@@ -5,7 +5,7 @@ from pandas import DataFrame
 
 from app.config import Config, InputType
 from app.constants import ENHET_FORMAAL_CSV_FILE_NAME, ENHET_NACE_CSV_FILE_NAME, ASSEMBLED_DATA_FILE_NAME, \
-    NACE_EXCEL_FILE_NAME
+    NACE_EXCEL_FILE_NAME, ORGNR_FIELD_NAME, NACE1_FIELD_NAME, NACE2_FIELD_NAME, NACE3_FIELD_NAME, AKTIVITET_FIELD_NAME
 
 
 def assemble(config: Config):
@@ -25,14 +25,19 @@ def assemble(config: Config):
 def read_excel(config: Config) -> DataFrame:
     logging.debug("Parsing Excel document")
 
-    data = pd.read_excel(config.path_to(NACE_EXCEL_FILE_NAME))
+    # Make sure all NACE codes are interpreted as strings, not numbers (as they may look like).
+    # This is important to avoid introducing floating point error labels like "85.59899999999999"
+    # for "85.599" or "rounded" labels like "71.1" for "71.100"
+    converters = {NACE1_FIELD_NAME: str, NACE2_FIELD_NAME: str, NACE3_FIELD_NAME: str}
+
+    data = pd.read_excel(config.path_to(NACE_EXCEL_FILE_NAME), converters=converters)
     logging.debug(f"Read {len(data)} lines from Excel file")
 
     # Some cells may be parsed as empty, set these to some string to allow the grouping to work
     data = data.fillna(" ")
 
-    data = data.groupby(["orgnr", "nace1", "nace2", "nace3"])["aktivitet"] \
-        .apply(lambda x: " ".join(x)).reset_index()
+    grouping_fields = [ORGNR_FIELD_NAME, NACE1_FIELD_NAME, NACE2_FIELD_NAME, NACE3_FIELD_NAME]
+    data = data.groupby(grouping_fields)[AKTIVITET_FIELD_NAME].apply(lambda x: " ".join(x)).reset_index()
 
     return data
 
@@ -45,7 +50,7 @@ def read_and_combine_csv(config: Config) -> DataFrame:
 
     logging.debug(f"Merging data")
 
-    return pd.merge(enhet_formaal, enhet_nace, on='orgnr', how='inner')
+    return pd.merge(enhet_formaal, enhet_nace, on=ORGNR_FIELD_NAME, how="inner")
 
 
 def _read_nace_data(file):
@@ -53,13 +58,13 @@ def _read_nace_data(file):
     # Make sure the NACE code isn't interpreted as a number
     data = pd.read_csv(file, sep="\t", dtype={"nacekode": str})
 
-    sorted_codes = data.sort_values(by=["orgnr", "rekkefolge"])
+    sorted_codes = data.sort_values(by=[ORGNR_FIELD_NAME, "rekkefolge"])
     data = pd.pivot_table(sorted_codes,
                           index="orgnr",
                           columns="rekkefolge",
                           values="nacekode",
                           aggfunc="first").reset_index()
-    data.columns = ["orgnr", "nace1", "nace2", "nace3"]
+    data.columns = [ORGNR_FIELD_NAME, NACE1_FIELD_NAME, NACE2_FIELD_NAME, NACE3_FIELD_NAME]
     return data
 
 

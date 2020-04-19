@@ -18,7 +18,7 @@ def process(config: Config):
     if config.model_type == ModelType.fasttext:
         def row_labeler(row):
             # Fasttext reads the label per row as "__label__<label text>"
-            return row[AKTIVITET_FIELD_NAME] + f" __label__{row[NACE1_FIELD_NAME]}"
+            return f"{row[AKTIVITET_FIELD_NAME]} __label__{row[NACE1_FIELD_NAME]}"
 
         labeled_data = data.apply(row_labeler, axis=1)
     else:  # Assume AutoML type
@@ -30,7 +30,7 @@ def process(config: Config):
         # AutoML requires at least 10 examples per label, so drop those with fewer occurrences.
         # This means we miss out on quite a few labels, which is unfortunate, but
         # these are also (probably) the labels least likely to occur in real use
-        labeled_data = labeled_data[labeled_data.groupby(NACE1_FIELD_NAME).tekst.transform(len) > 10]
+        labeled_data = labeled_data[labeled_data.groupby(NACE1_FIELD_NAME)[AKTIVITET_FIELD_NAME].transform(len) > 10]
 
         # AutoML does not allow . in label texts, so replace with _
         labeled_data[NACE1_FIELD_NAME] = labeled_data[NACE1_FIELD_NAME].str.replace(".", "_")

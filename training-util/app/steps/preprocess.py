@@ -9,6 +9,8 @@ from app.constants import ASSEMBLED_DATA_FILE_NAME, PREPROCESSED_DATA_FILE_NAME,
 
 # Only load spaCy if needed
 nlp = None
+# Some common words with little added meaning that can be considered stop words in the NLP
+ADDITIONAL_STOP_WORDS = {"herunder", "samt", "hermed"}
 
 
 def preprocess(config: Config):
@@ -36,6 +38,7 @@ def preprocess(config: Config):
         # Enable/disable some parts for speed based on StackOverflow suggestions
         nlp = spacy.load("nb_core_news_sm", disable=["ner", "parser"])
         nlp.add_pipe(nlp.create_pipe("sentencizer"))
+        nlp.Defaults.stop_words |= ADDITIONAL_STOP_WORDS
 
         data["aktivitet"] = data[AKTIVITET_FIELD_NAME].map(_lemmatize)
 

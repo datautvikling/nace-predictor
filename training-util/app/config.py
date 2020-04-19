@@ -18,7 +18,7 @@ class Config:
     working_dir: str
     input_type: InputType
     model_type: ModelType
-    lemmatize: bool
+    nlp: bool
 
     def path_to(self, file_name: str) -> str:
         return path.join(self.working_dir, file_name)

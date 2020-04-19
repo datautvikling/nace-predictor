@@ -25,7 +25,7 @@ def preprocess(config: Config):
     logging.debug("Dropping very short texts")
     data = data[data[AKTIVITET_FIELD_NAME].apply(lambda t: len(t) > 4)]
 
-    if not config.lemmatize:
+    if not config.nlp:
         logging.debug("Tokenizing")
         data["aktivitet"] = data[AKTIVITET_FIELD_NAME].map(_simple_tokenization)
     else:
@@ -66,9 +66,9 @@ def _lemmatize(s: str) -> str:
     tokens = []
 
     for token in nlp(tokenized):
-        # Drop punctuation and "stop words" - the most common words of a language
-        # These words are probably "grammatical" and not useful in identifying NACE codes
-        if token.is_punct or token.is_stop:
+        # Drop punctuation, numbers and "stop words" - the most common words of a language:
+        # words that are probably not connected to the NACE code suited for the text
+        if token.is_punct or token.like_num or token.is_stop:
             continue
 
         # spaCy does not attempt to lemmatize words it considers pronouns, so just keep their form as is

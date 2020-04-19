@@ -54,9 +54,9 @@ def parse_arguments(step_names: List[str]):
     parser.add_argument("--model-type",
                         action="store", choices=["fasttext", "automl"], default="fasttext",
                         help="The type of model to train (or prepare data for). Default is 'fasttext'.")
-    parser.add_argument("--lemmatize",
+    parser.add_argument("--nlp",
                         action="store", type=bool, default="false",
-                        help="If true, do a 'full' NLP-based token- and lemmatization of the input text. "
+                        help="If true, do NLP-based processing of the input text (lemmatize, drop stop words, etc.). "
                              "If false, only basic tokenization is done (which is much quicker). Default is false.")
     parser.add_argument("--from-step",
                         action="store", choices=step_names, default=step_names[0],
@@ -74,7 +74,7 @@ def parse_arguments(step_names: List[str]):
 if __name__ == '__main__':
     args = parse_arguments([step[0] for step in ALL_STEPS])
 
-    config = Config(args.working_dir, InputType(args.input_type), ModelType(args.model_type), args.lemmatize)
+    config = Config(args.working_dir, InputType(args.input_type), ModelType(args.model_type), args.nlp)
 
     # Make sure the working dir exists
     Path(args.working_dir).mkdir(parents=True, exist_ok=True)

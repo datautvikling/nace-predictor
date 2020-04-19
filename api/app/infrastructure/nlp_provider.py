@@ -36,6 +36,9 @@ def clean(s: str, full: bool = False) -> str:
 def load_nlp():
     global nlp
 
+    if nlp:  # Already loaded?
+        return
+
     # We don't need the parser, disabling it will increase performance
     # Enable/disable some parts for speed based on StackOverflow suggestions
     nlp = spacy.load("nb_core_news_sm", disable=["ner", "parser"])

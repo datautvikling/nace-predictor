@@ -2,7 +2,7 @@
   "model": {
     "type": "FastText",
     "name": "my-fasttext-model",
-    "nlp": true,
+    "nlp": false,
     "artifactType": "LocalFile",
     "artifactInfo": {
       "path": "data/model.ftz"

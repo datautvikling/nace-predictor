@@ -3,3 +3,6 @@ xlrd
 scikit-learn
 fastText
 requests
+spacy
+# Spacy language models aren't available on PiPy, so reference the archive it directly
+https://github.com/explosion/spacy-models/releases/download/nb_core_news_sm-2.2.5/nb_core_news_sm-2.2.5.tar.gz

@@ -23,6 +23,12 @@ def test(config: Config):
     logging.debug(f"{len(model.get_words())} words")
     logging.debug(f"{len(model.get_labels())} labels")
 
+    samples, precision, recall = model.test(config.path_to(TESTING_SET_FILE_NAME))
+
+    logging.debug(f"Overall precision is {precision}")
+
+    logging.debug("Running detailed FastText testing")
+
     label_results = model.test_label(config.path_to(TESTING_SET_FILE_NAME))
 
     transformed_results = [[label[9:], 0 if math.isnan(r["precision"]) else r["precision"], r["recall"], r["f1score"]]

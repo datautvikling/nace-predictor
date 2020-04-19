@@ -4,6 +4,7 @@ from flask_cors import CORS
 
 from app.api import API_BLUEPRINT
 from app.infrastructure.model_provider import get_predictor
+from app.infrastructure.nlp_provider import load_nlp
 
 app = Flask(__name__)
 app.register_blueprint(API_BLUEPRINT, url_prefix='/api')
@@ -13,10 +14,9 @@ CORS(app)
 @app.route("/_ah/warmup")
 def warmup():
     """Warms up the application"""
-    # Getting a predictor means the underlying model is loaded.
-    # This is expected to be the most costly "startup-action", so
-    # when it is completed an instance should be sufficiently warmed up
+    # Get the predictor to load the model, and also load NLP in case it will be needed
     get_predictor()
+    load_nlp()
     return "Warmed up!", 200
 
 

@@ -17,13 +17,6 @@ Install requirements:
 pip install -r requirements.txt
 ```
 
-If you want to do NLP processing of the input data, you should also download the
- [Norwegian language model](https://spacy.io/models/nb)  for the spaCy tokenizer:
-
-```bash
-python -m spacy download nb_core_news_sm
-```
-
 ## Running the utility
 
 Run the utility with Python:

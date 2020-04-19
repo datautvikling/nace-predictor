@@ -58,6 +58,7 @@ def _load_predictor(config):
     model = Model(
         model_type,
         model_config["name"],
+        model_config["nlp"],
         load_model(path)
     )
 

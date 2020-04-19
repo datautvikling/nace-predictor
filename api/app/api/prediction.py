@@ -8,6 +8,7 @@ from flask_restx import Namespace, fields, Resource
 from app.domain.predictor.predictor import Prediction, PredictionDescription
 from app.infrastructure.auth_provider import is_authorized
 from app.infrastructure.model_provider import get_predictor
+from app.infrastructure.nlp_provider import clean
 
 ORGFORM_FIELD_NAME = "orgform"
 TEXT_FIELD_NAME = "text"
@@ -87,7 +88,10 @@ class Prediction(Resource):
         amount = _get_param(AMOUNT_PARAM, DEFAULT_AMOUNT, int)
         threshold = _get_param(THRESHOLD_PARAM, DEFAULT_THRESHOLD, float)
 
-        pred = get_predictor().predict(PredictionDescription(text, orgform), amount, threshold)
+        predictor = get_predictor()
+        description = PredictionDescription(clean(text, predictor.model.nlp), orgform)
+
+        pred = predictor.predict(description, amount, threshold)
         result = to_model(pred)
 
         _log_prediction(text, orgform, amount, threshold, result)

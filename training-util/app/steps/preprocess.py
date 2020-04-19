@@ -18,7 +18,7 @@ def preprocess(config: Config):
     This step should be algorithm-independent.
     """
 
-    data = pd.read_csv(config.path_to(ASSEMBLED_DATA_FILE_NAME), dtype={NACE1_FIELD_NAME: str}).head(10000)
+    data = pd.read_csv(config.path_to(ASSEMBLED_DATA_FILE_NAME), dtype={NACE1_FIELD_NAME: str})
 
     logging.debug(f"Pre-processing {len(data)} rows")
 

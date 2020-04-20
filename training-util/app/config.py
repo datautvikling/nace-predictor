@@ -23,6 +23,7 @@ class Config:
     training_params_path: Optional[str]
     nlp: bool
     hypertune: bool
+    quantize: bool
 
     def path_to(self, file_name: str) -> str:
         return path.join(self.working_dir, file_name)

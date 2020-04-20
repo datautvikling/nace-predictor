@@ -75,6 +75,9 @@ def parse_arguments(step_names: List[str]):
                              "'training_params.json' in the working directory, and may be reused for training with the "
                              "--training-params argument. Note that params provided by the --training-params "
                              "argument will not be used when hypertuning is enabled.")
+    parser.add_argument("--quantize",
+                        action="store_true",
+                        help="Quantize the trained model, reducing its size. The process takes time.")
     parser.add_argument("--from-step",
                         action="store", choices=step_names, default=step_names[0],
                         help="Set the step to start from, skipping those that precede it.")
@@ -92,7 +95,7 @@ if __name__ == '__main__':
     args = parse_arguments([step[0] for step in ALL_STEPS])
 
     config = Config(args.working_dir, InputType(args.input_type), args.samples, ModelType(args.model_type),
-                    args.training_params, args.nlp, args.hypertune)
+                    args.training_params, args.nlp, args.hypertune, args.quantize)
 
     # Make sure the working dir exists
     Path(args.working_dir).mkdir(parents=True, exist_ok=True)

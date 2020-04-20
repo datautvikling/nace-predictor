@@ -25,7 +25,7 @@ def test(config: Config):
 
     samples, precision, recall = model.test(config.path_to(TESTING_SET_FILE_NAME))
 
-    logging.debug(f"Overall precision is {precision}")
+    logging.info(f"Overall precision is {precision}")
 
     logging.debug("Running detailed FastText testing")
 

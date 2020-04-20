@@ -37,16 +37,16 @@ def train(config: Config):
                 model = train_supervised(input=training_file, **params)
     else:
         logging.debug("Training model with hyperparameter optimization.")
-        model = train_supervised(input=training_file,
-                                 autotuneValidationFile=config.path_to(VALIDATION_SET_FILE_NAME),
-                                 verbose=4)
+        logging.debug("Press CTRL+C at any time to train with the best parameters found so far.")
+        model = train_supervised(input=training_file, autotuneValidationFile=config.path_to(VALIDATION_SET_FILE_NAME))
 
         training_params_file_path = config.path_to("training_params.json")
         logging.info("Storing training parameters as " + training_params_file_path)
         _log_params(model.f.getArgs(), training_params_file_path)
 
-    logging.debug("Quantizing model")
-    model.quantize()
+    if config.quantize:
+        logging.debug("Quantizing model")
+        model.quantize()
 
     logging.info("Storing model as " + config.path_to(MODEL_FILE_NAME))
     model.save_model(config.path_to(MODEL_FILE_NAME))

@@ -63,11 +63,10 @@ def parse_arguments(step_names: List[str]):
                         help="If set, do NLP-based processing of the input text (lemmatize, drop stop words, etc.). "
                              "If not set, only basic tokenization is done (which is much quicker), default behaviour.")
     parser.add_argument("--hypertune",
-                        action="store", type=int, default=None,
-                        help="Perform hyperparameter optimization for the provided number of minutes (assuming the "
-                             "model type supports such a feature). If not set, no hypertuning is performed. "
-                             "Default is no hypertuning. Note that autotuning may take longer than the parameter"
-                             "indicates due to fastText behaviour. The process can be manually finished with SIGINT.")
+                        action="store_true",
+                        help="Perform hyperparameter optimization if supported by the model. "
+                             "This process may take a long time, but can be stopped by sending SIGINT (ctrl+C), "
+                             "and the best result thus far will be used.")
     parser.add_argument("--from-step",
                         action="store", choices=step_names, default=step_names[0],
                         help="Set the step to start from, skipping those that precede it.")

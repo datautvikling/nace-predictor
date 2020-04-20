@@ -21,7 +21,7 @@ def split(config: Config):
     # data = pd.read_csv(config.path_to(PROCESSED_DATA_FILE_NAME))
     data = pd.read_csv(config.path_to(PROCESSED_DATA_FILE_NAME)).head(1000)
 
-    if not config.hypertune_minutes:
+    if not config.hypertune:
         testing_rate = 0.1  # 10% of data for testing
 
         training_rate = 1 - testing_rate

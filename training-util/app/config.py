@@ -21,7 +21,7 @@ class Config:
     samples: Optional[int]
     model_type: ModelType
     nlp: bool
-    hypertune_minutes: Optional[int]
+    hypertune: bool
 
     def path_to(self, file_name: str) -> str:
         return path.join(self.working_dir, file_name)

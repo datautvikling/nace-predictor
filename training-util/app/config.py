@@ -20,6 +20,7 @@ class Config:
     input_type: InputType
     samples: Optional[int]
     model_type: ModelType
+    training_params_path: Optional[str]
     nlp: bool
     hypertune: bool
 

@@ -6,7 +6,7 @@ from fasttext import train_supervised
 from app.config import Config, ModelType
 from app.constants import TRAINING_SET_FILE_NAME, MODEL_FILE_NAME, VALIDATION_SET_FILE_NAME
 
-training_params = ["epoch", "lr", "dim", "minCount", "wordNgrams", "minn", "maxn", "bucket", "dsub"]
+training_params = ["epoch", "lr", "dim", "minCount", "wordNgrams", "minn", "maxn", "bucket"]
 
 
 def train(config: Config):
@@ -18,12 +18,26 @@ def train(config: Config):
         logging.debug("Skipping because of model type")
         return
 
+    training_file = config.path_to(TRAINING_SET_FILE_NAME)
+
     if not config.hypertune:
-        logging.debug("Training model")
-        model = train_supervised(input=config.path_to(TRAINING_SET_FILE_NAME))
+        if not config.training_params_path:
+            logging.debug("Training model with default parameters")
+            model = train_supervised(input=training_file)
+        else:
+            params_file_path = config.path_to(config.training_params_path)
+            logging.debug("Reading parameters from " + params_file_path)
+            with open(params_file_path) as params_file:
+                params = json.load(params_file)
+
+                logging.debug("Training model with parameters: ")
+                for name, value in params.items():
+                    logging.debug(f"    {name} = {value}")
+
+                model = train_supervised(input=training_file, **params)
     else:
-        logging.debug(f"Training model with hyperparameter optimization.")
-        model = train_supervised(input=config.path_to(TRAINING_SET_FILE_NAME),
+        logging.debug("Training model with hyperparameter optimization.")
+        model = train_supervised(input=training_file,
                                  autotuneValidationFile=config.path_to(VALIDATION_SET_FILE_NAME),
                                  verbose=4)
 

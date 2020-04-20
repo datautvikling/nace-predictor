@@ -55,9 +55,14 @@ def parse_arguments(step_names: List[str]):
                         action="store", choices=["fasttext", "automl"], default="fasttext",
                         help="The type of model to train (or prepare data for). Default is 'fasttext'.")
     parser.add_argument("--nlp",
-                        action="store", type=bool, default="false",
-                        help="If true, do NLP-based processing of the input text (lemmatize, drop stop words, etc.). "
-                             "If false, only basic tokenization is done (which is much quicker). Default is false.")
+                        action="store_true",
+                        help="If set, do NLP-based processing of the input text (lemmatize, drop stop words, etc.). "
+                             "If not set, only basic tokenization is done (which is much quicker), default behaviour.")
+    parser.add_argument("--hypertune",
+                        action="store", type=int, default=None,
+                        help="Perform hyperparameter optimization for the provided number of minutes (assuming the "
+                             "model type supports such a feature). If not set, no hypertuning is performed. "
+                             "Default is no hypertuning.")
     parser.add_argument("--from-step",
                         action="store", choices=step_names, default=step_names[0],
                         help="Set the step to start from, skipping those that precede it.")
@@ -74,7 +79,8 @@ def parse_arguments(step_names: List[str]):
 if __name__ == '__main__':
     args = parse_arguments([step[0] for step in ALL_STEPS])
 
-    config = Config(args.working_dir, InputType(args.input_type), ModelType(args.model_type), args.nlp)
+    config = Config(args.working_dir, InputType(args.input_type), ModelType(args.model_type), args.nlp,
+                    args.hypertune)
 
     # Make sure the working dir exists
     Path(args.working_dir).mkdir(parents=True, exist_ok=True)

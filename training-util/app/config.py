@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from enum import Enum
 from os import path
+from typing import Optional
 
 
 class InputType(Enum):
@@ -19,6 +20,7 @@ class Config:
     input_type: InputType
     model_type: ModelType
     nlp: bool
+    hypertune_minutes: Optional[int]
 
     def path_to(self, file_name: str) -> str:
         return path.join(self.working_dir, file_name)

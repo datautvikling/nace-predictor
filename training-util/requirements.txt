@@ -1,6 +1,5 @@
 pandas
 xlrd
-scikit-learn
 fastText
 requests
 spacy

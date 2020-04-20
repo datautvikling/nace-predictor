@@ -51,6 +51,10 @@ def parse_arguments(step_names: List[str]):
                         help="Training data input type. Either two downloadable csv files, or a "
                              "complete Excel (xls) file which must be provided in the working dir. "
                              "Default is 'csv'.")
+    parser.add_argument("--samples",
+                        action="store", type=int, default=None,
+                        help="How many enhet samples to make from the input. If none is set (which is the default),"
+                             " all data will be used.")
     parser.add_argument("--model-type",
                         action="store", choices=["fasttext", "automl"], default="fasttext",
                         help="The type of model to train (or prepare data for). Default is 'fasttext'.")
@@ -62,7 +66,8 @@ def parse_arguments(step_names: List[str]):
                         action="store", type=int, default=None,
                         help="Perform hyperparameter optimization for the provided number of minutes (assuming the "
                              "model type supports such a feature). If not set, no hypertuning is performed. "
-                             "Default is no hypertuning.")
+                             "Default is no hypertuning. Note that autotuning may take longer than the parameter"
+                             "indicates due to fastText behaviour. The process can be manually finished with SIGINT.")
     parser.add_argument("--from-step",
                         action="store", choices=step_names, default=step_names[0],
                         help="Set the step to start from, skipping those that precede it.")
@@ -79,7 +84,7 @@ def parse_arguments(step_names: List[str]):
 if __name__ == '__main__':
     args = parse_arguments([step[0] for step in ALL_STEPS])
 
-    config = Config(args.working_dir, InputType(args.input_type), ModelType(args.model_type), args.nlp,
+    config = Config(args.working_dir, InputType(args.input_type), args.samples, ModelType(args.model_type), args.nlp,
                     args.hypertune)
 
     # Make sure the working dir exists

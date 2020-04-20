@@ -18,6 +18,7 @@ class ModelType(Enum):
 class Config:
     working_dir: str
     input_type: InputType
+    samples: Optional[int]
     model_type: ModelType
     nlp: bool
     hypertune_minutes: Optional[int]

@@ -18,7 +18,8 @@ def split(config: Config):
         logging.debug("Skipping because of model type")
         return
 
-    data = pd.read_csv(config.path_to(PROCESSED_DATA_FILE_NAME))
+    # data = pd.read_csv(config.path_to(PROCESSED_DATA_FILE_NAME))
+    data = pd.read_csv(config.path_to(PROCESSED_DATA_FILE_NAME)).head(1000)
 
     if not config.hypertune_minutes:
         testing_rate = 0.1  # 10% of data for testing

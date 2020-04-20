@@ -1,7 +1,9 @@
 pandas
 xlrd
-fastText
+# The latest PyPi package for Fasttext does not contain hypertuning at the time of writing, so we need to get it
+# directly from the source
+git+https://github.com/facebookresearch/fastText.git
 requests
 spacy
-# Spacy language models aren't available on PiPy, so reference the archive it directly
+# Spacy language models aren't available on PyPi, so reference the archive directly
 https://github.com/explosion/spacy-models/releases/download/nb_core_news_sm-2.2.5/nb_core_news_sm-2.2.5.tar.gz

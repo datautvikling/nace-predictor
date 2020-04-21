@@ -30,15 +30,16 @@ def train(config: Config):
             with open(params_file_path) as params_file:
                 params = json.load(params_file)
 
-                logging.debug("Training model with parameters: ")
+                logging.debug("Training model with parameters")
                 for name, value in params.items():
                     logging.debug(f"    {name} = {value}")
 
                 model = train_supervised(input=training_file, **params)
     else:
         logging.debug("Training model with hyperparameter optimization.")
-        logging.debug("Press CTRL+C at any time to train with the best parameters found so far.")
-        model = train_supervised(input=training_file, autotuneValidationFile=config.path_to(VALIDATION_SET_FILE_NAME))
+        logging.info("Press CTRL+C at any time to stop hypertuning and train with the best parameters found so far.")
+        model = train_supervised(input=training_file, autotuneValidationFile=config.path_to(VALIDATION_SET_FILE_NAME),
+                                 verbose=4)
 
         training_params_file_path = config.path_to("training_params.json")
         logging.info("Storing training parameters as " + training_params_file_path)

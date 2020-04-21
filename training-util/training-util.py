@@ -35,7 +35,7 @@ def main(from_step: str, to_step: str, step_config: Config):
     logging.debug("Will run steps: " + ", ".join([step[0] for step in steps_to_run]))
 
     for name, step in steps_to_run:
-        logging.info("Running step " + name)
+        logging.info(f"Running the {name} step")
         step(step_config)
 
 
@@ -77,7 +77,7 @@ def parse_arguments(step_names: List[str]):
                              "argument will not be used when hypertuning is enabled.")
     parser.add_argument("--quantize",
                         action="store_true",
-                        help="Quantize the trained model, reducing its size. The process takes time.")
+                        help="Quantize the trained model, greatly reducing its size. The process takes time.")
     parser.add_argument("--from-step",
                         action="store", choices=step_names, default=step_names[0],
                         help="Set the step to start from, skipping those that precede it.")

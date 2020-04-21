@@ -13,6 +13,10 @@ def process(config: Config):
 
     data = pd.read_csv(config.path_to(PREPROCESSED_DATA_FILE_NAME), dtype={"nace1": str})
 
+    if config.samples:
+        logging.debug(f"Sampling {config.samples} rows from preprocessed data")
+        data = data.sample(n=config.samples)
+
     logging.debug("Labeling")
 
     if config.model_type == ModelType.fasttext:

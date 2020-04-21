@@ -35,7 +35,7 @@ def main(from_step: str, to_step: str, step_config: Config):
     logging.debug("Will run steps: " + ", ".join([step[0] for step in steps_to_run]))
 
     for name, step in steps_to_run:
-        logging.info("Running step " + name)
+        logging.info(f"Running the {name} step")
         step(step_config)
 
 
@@ -51,13 +51,33 @@ def parse_arguments(step_names: List[str]):
                         help="Training data input type. Either two downloadable csv files, or a "
                              "complete Excel (xls) file which must be provided in the working dir. "
                              "Default is 'csv'.")
+    parser.add_argument("--samples",
+                        action="store", type=int, default=None,
+                        help="How many enhet samples to make from the input. If none is set (which is the default),"
+                             " all data will be used.")
     parser.add_argument("--model-type",
                         action="store", choices=["fasttext", "automl"], default="fasttext",
                         help="The type of model to train (or prepare data for). Default is 'fasttext'.")
+    parser.add_argument("--training-params",
+                        action="store", type=str, default=None,
+                        help="A JSON file (path relative to the working directory) containing training parameters. "
+                             "These parameters will be used during model training. Default is to not read any "
+                             "parameters, using the model default values.")
     parser.add_argument("--nlp",
-                        action="store", type=bool, default="false",
-                        help="If true, do NLP-based processing of the input text (lemmatize, drop stop words, etc.). "
-                             "If false, only basic tokenization is done (which is much quicker). Default is false.")
+                        action="store_true",
+                        help="If set, do NLP-based processing of the input text (lemmatize, drop stop words, etc.). "
+                             "If not set, only basic tokenization is done (which is much quicker), default behaviour.")
+    parser.add_argument("--hypertune",
+                        action="store_true",
+                        help="Perform hyperparameter optimization if supported by the model. "
+                             "This process may take a long time, but can be stopped by sending SIGINT (ctrl+C), "
+                             "and the best result thus far will be used. The parameters are stored as "
+                             "'training_params.json' in the working directory, and may be reused for training with the "
+                             "--training-params argument. Note that params provided by the --training-params "
+                             "argument will not be used when hypertuning is enabled.")
+    parser.add_argument("--quantize",
+                        action="store_true",
+                        help="Quantize the trained model, greatly reducing its size. The process takes time.")
     parser.add_argument("--from-step",
                         action="store", choices=step_names, default=step_names[0],
                         help="Set the step to start from, skipping those that precede it.")
@@ -74,7 +94,8 @@ def parse_arguments(step_names: List[str]):
 if __name__ == '__main__':
     args = parse_arguments([step[0] for step in ALL_STEPS])
 
-    config = Config(args.working_dir, InputType(args.input_type), ModelType(args.model_type), args.nlp)
+    config = Config(args.working_dir, InputType(args.input_type), args.samples, ModelType(args.model_type),
+                    args.training_params, args.nlp, args.hypertune, args.quantize)
 
     # Make sure the working dir exists
     Path(args.working_dir).mkdir(parents=True, exist_ok=True)

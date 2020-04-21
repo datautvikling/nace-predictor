@@ -16,7 +16,7 @@ def warmup():
     """Warms up the application"""
     # Get the predictor to load the model, and also load NLP in case it will be needed
     get_predictor()
-    # load_nlp() # Disable for now
+    # load_nlp() # Disable for now, memory usage seems unpredictable
     return "Warmed up!", 200
 
 

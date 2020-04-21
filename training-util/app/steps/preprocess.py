@@ -27,8 +27,11 @@ def preprocess(config: Config):
     logging.debug("Dropping very short texts")
     data = data[data[AKTIVITET_FIELD_NAME].apply(lambda t: len(t) > 4)]
 
+    logging.debug("Dropping '00.000 - uoppgitt'")
+    data = data[data[NACE1_FIELD_NAME] != "00.000"]
+
     if not config.nlp:
-        logging.debug("Tokenizing")
+        logging.debug("Tokenizing (simple processing)")
         data["aktivitet"] = data[AKTIVITET_FIELD_NAME].map(_simple_tokenization)
     else:
         logging.debug("Tokenizing + lemmatizing with spaCy")

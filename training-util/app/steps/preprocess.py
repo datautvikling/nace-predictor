@@ -27,9 +27,6 @@ def preprocess(config: Config):
     logging.debug("Dropping very short texts")
     data = data[data[AKTIVITET_FIELD_NAME].apply(lambda t: len(t) > 4)]
 
-    logging.debug("Dropping '00.000 - uoppgitt'")
-    data = data[data[NACE1_FIELD_NAME] != "00.000"]
-
     if not config.nlp:
         logging.debug("Tokenizing (simple processing)")
         data["aktivitet"] = data[AKTIVITET_FIELD_NAME].map(_simple_tokenization)
@@ -43,10 +40,10 @@ def preprocess(config: Config):
         nlp.add_pipe(nlp.create_pipe("sentencizer"))
         nlp.Defaults.stop_words |= ADDITIONAL_STOP_WORDS
 
-        data["aktivitet"] = data[AKTIVITET_FIELD_NAME].map(_lemmatize)
+        data[AKTIVITET_FIELD_NAME] = data[AKTIVITET_FIELD_NAME].map(_lemmatize)
 
     logging.debug("Dropping 'konkursbo'")
-    data = data[data[AKTIVITET_FIELD_NAME].apply(lambda t: t != "konkursbo")]
+    data = data[data[AKTIVITET_FIELD_NAME] != "konkursbo"]
 
     logging.debug(f"Pre-processed to {len(data)} rows")
 

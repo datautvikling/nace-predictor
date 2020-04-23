@@ -19,7 +19,7 @@ def assemble(config: Config):
 
     logging.info("Storing as " + config.path_to(ASSEMBLED_DATA_FILE_NAME))
 
-    assembled_data.to_csv(config.path_to(ASSEMBLED_DATA_FILE_NAME))
+    assembled_data.to_csv(config.path_to(ASSEMBLED_DATA_FILE_NAME), index=False)
 
 
 def read_excel(config: Config) -> DataFrame:

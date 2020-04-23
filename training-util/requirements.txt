@@ -7,3 +7,4 @@ requests
 spacy
 # Spacy language models aren't available on PyPi, so reference the archive directly
 https://github.com/explosion/spacy-models/releases/download/nb_core_news_sm-2.2.5/nb_core_news_sm-2.2.5.tar.gz
+openpyxl

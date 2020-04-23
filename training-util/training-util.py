@@ -4,6 +4,7 @@ from pathlib import Path
 from typing import List
 
 from app.config import Config, ModelType, InputType
+from app.steps.apply_to_input import apply_to_input
 from app.steps.assemble import assemble
 from app.steps.gather import gather
 from app.steps.preprocess import preprocess
@@ -19,7 +20,8 @@ ALL_STEPS = [
     ("process", process),
     ("split", split),
     ("train", train),
-    ("test", test)
+    ("test", test),
+    ("apply-to-input", apply_to_input)
 ]
 
 

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import string
 import uuid
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
@@ -54,3 +55,12 @@ class Predictor(ABC):
     def model_name(self) -> str:
         """The unique name of the model used by this predictor"""
         return self.model.name
+
+
+def clean(s: str) -> str:
+    """'Clean' a string by removing punctuation, etc."""
+    lower = s.lower()
+    split = lower.split()
+    stripped = [word.translate(str.maketrans('', '', string.punctuation)) for word in split]
+
+    return " ".join(stripped)

@@ -26,7 +26,7 @@ class TestFastTextPredictor(unittest.TestCase):
 
         raw_prediction = ([LABEL_PREFIX + pred_1_code, LABEL_PREFIX + pred_2_code], [pred_1_conf, pred_2_conf])
 
-        dummy_model = Model(ModelType.fast_text, "dummy model", False, DummyPredictionProvider(raw_prediction))
+        dummy_model = Model(ModelType.fast_text, "dummy model", DummyPredictionProvider(raw_prediction))
 
         actual_prediction = FastTextPredictor(dummy_model).predict(PredictionDescription("just a test!"), 5, 0)
 
@@ -35,7 +35,7 @@ class TestFastTextPredictor(unittest.TestCase):
         self.assertEqual(expected_predictions, actual_prediction.predictions)
 
     def text_prediction_adds_meta_info(self):
-        dummy_model = Model(ModelType.fast_text, "dummy model", False, DummyPredictionProvider(([], [])))
+        dummy_model = Model(ModelType.fast_text, "dummy model", DummyPredictionProvider(([], [])))
 
         actual_prediction = FastTextPredictor(dummy_model).predict(PredictionDescription("just a test!"), 5, 0)
 

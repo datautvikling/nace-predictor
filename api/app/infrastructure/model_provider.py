@@ -1,10 +1,13 @@
 import json
+from dataclasses import dataclass
 from typing import Dict
 
-from fasttext import load_model
+from fasttext import load_model as load_fasttext_model
 from google.cloud import storage
+from google.cloud.automl_v1beta1 import PredictionServiceClient
 
 from app.domain.model import ModelType, Model
+from app.domain.predictor.automl_predictor import AutoMLPredictor
 from app.domain.predictor.fasttext_predictor import FastTextPredictor
 from app.domain.predictor.predictor import Predictor
 
@@ -39,10 +42,15 @@ def get_predictor(configuration: Dict = None) -> Predictor:
 def _load_predictor(config):
     model_config = config["model"]
     model_type = ModelType(model_config["type"])
-    artifact_type = model_config["artifactType"]
 
-    if not model_type == ModelType.fast_text:
-        raise ModelLoadingException("Only model type FastText is currently supported")
+    if model_type == ModelType.fast_text:
+        return _load_fasttext_predictor(model_type, model_config)
+    else:  # AutoML
+        return _load_automl_predictor(model_type, model_config)
+
+
+def _load_fasttext_predictor(model_type, model_config):
+    artifact_type = model_config["artifactType"]
 
     if artifact_type == "LocalFile":
         path = model_config["artifactInfo"]["path"]
@@ -58,10 +66,34 @@ def _load_predictor(config):
     model = Model(
         model_type,
         model_config["name"],
-        load_model(path)
+        load_fasttext_model(path)
     )
 
     return FastTextPredictor(model)
+
+
+class AutoMLAPIWrapper:
+
+    def __init__(self, project, location, automl_model_name):
+        self.client = PredictionServiceClient()
+        self.path = PredictionServiceClient.model_path(project, location, automl_model_name)
+
+    def predict(self, text, amount, threshold):
+        payload = {"text_snippet": {"content": text, "mime_type": "text/plain"} }
+        predictions = self.client.predict(self.path, payload)
+        return predictions
+
+
+def _load_automl_predictor(model_type, model_config):
+    artifact = model_config["artifactInfo"]
+
+    model = Model(
+        model_type,
+        model_config["name"],
+        AutoMLAPIWrapper(artifact["project"], artifact["location"], artifact["id"])
+    )
+
+    return AutoMLPredictor(model)
 
 
 class ModelLoadingException(Exception):

@@ -5,4 +5,7 @@ fasttext==0.9.1
 werkzeug==0.16.1  # There is an issue with Flask and werkzeug 1.0.0, don't upgrade yet
 google-cloud-storage==1.26.0
 google-cloud-logging==1.15.0
+google-api-core==1.17.0
+google-cloud-automl==0.10.0
+grpcio==1.28.1
 gunicorn==20.0.4

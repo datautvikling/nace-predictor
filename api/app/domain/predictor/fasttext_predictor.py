@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from app.domain.predictor.predictor import Predictor, Prediction, PredictionMetaInfo
+from app.domain.predictor.predictor import Predictor, clean, Prediction, PredictionMetaInfo
 
 LABEL_PREFIX = "__label__"
 
@@ -10,10 +10,12 @@ class FastTextPredictor(Predictor):
     """A predictor using a FastText model"""
 
     def predict(self, description, amount, threshold):
+        cleaned_text = clean(description.text)
+
         meta_info = PredictionMetaInfo(self.model_name())
 
         try:
-            raw_predictions = self.model.prediction_provider.predict(description.text, k=amount, threshold=threshold)
+            raw_predictions = self.model.prediction_provider.predict(cleaned_text, k=amount, threshold=threshold)
             predictions = [(strip_prefix(code), confidence) for code, confidence in zip(*raw_predictions)]
             return Prediction(predictions, meta_info)
         except ValueError:

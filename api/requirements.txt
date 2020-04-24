@@ -5,6 +5,4 @@ fasttext==0.9.1
 werkzeug==0.16.1  # There is an issue with Flask and werkzeug 1.0.0, don't upgrade yet
 google-cloud-storage==1.26.0
 google-cloud-logging==1.15.0
-spacy==2.2.4
-# Spacy language models aren't available on PiPy, so reference the archive it directly
-https://github.com/explosion/spacy-models/releases/download/nb_core_news_sm-2.2.5/nb_core_news_sm-2.2.5.tar.gz
+gunicorn==20.0.4

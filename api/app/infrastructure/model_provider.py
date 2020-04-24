@@ -75,12 +75,14 @@ def _load_fasttext_predictor(model_type, model_config):
 class AutoMLAPIWrapper:
 
     def __init__(self, project, location, automl_model_name):
-        self.client = PredictionServiceClient()
+        # The default client behaviour excepts a global model, set the specific EU endpoint for EU models
+        self.client = PredictionServiceClient(client_options={"api_endpoint": "eu-automl.googleapis.com:443"})
         self.path = PredictionServiceClient.model_path(project, location, automl_model_name)
 
-    def predict(self, text, amount, threshold):
-        payload = {"text_snippet": {"content": text, "mime_type": "text/plain"} }
+    def predict(self, text):
+        payload = {"text_snippet": {"content": text, "mime_type": "text/plain"}}
         predictions = self.client.predict(self.path, payload)
+        print(predictions)
         return predictions
 
 

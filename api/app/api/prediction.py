@@ -89,9 +89,6 @@ class Prediction(Resource):
 
         pred = get_predictor().predict(PredictionDescription(text, orgform), amount, threshold)
 
-        # TODO delete, just debugging
-        _log(pred)
-
         result = to_model(pred)
 
         _log_prediction(text, orgform, amount, threshold, result)

@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from app.domain.predictor.predictor import Predictor, clean, PredictionMetaInfo
+from app.domain.predictor.predictor import Predictor, clean, PredictionMetaInfo, Prediction
 
 
 @dataclass(frozen=True)
@@ -10,10 +10,21 @@ class AutoMLPredictor(Predictor):
     def predict(self, description, amount, threshold):
         cleaned_text = clean(description.text)
 
-        meta_info = PredictionMetaInfo(self.model_name())
+        prediction_payload = self.model.prediction_provider.predict(cleaned_text).payload
 
-        predictions = self.model.prediction_provider.predict(description.text, amount, threshold)
+        predictions = []
 
-        return predictions
+        for pred in prediction_payload[:amount]:
+            # AutoML does not like . in labels, so it has been replaced by _
+            # Swap it back before providing to client
+            code = pred.display_name.replace("_", ".")
+            confidence = pred.classification.score
 
+            if confidence < threshold:
+                # Results are ordered by confidence (highest first), so if we encounter anything
+                # below the threshold we can stop iterating
+                break
 
+            predictions.append((code, confidence))
+
+        return Prediction(predictions, PredictionMetaInfo(self.model_name()))

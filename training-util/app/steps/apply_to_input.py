@@ -26,11 +26,13 @@ def apply_to_input(config: Config):
 
     logging.debug(f"Predicting {len(data)} rows")
 
-    data["prediction"], data["confidence"] = zip(*data.apply(lambda x: predict(model, x["aktivitet"]), axis=1))
+    data["pred1"], data["pred2"], data["pred3"], data["pred4"], data["pred5"], \
+    data["conf1"], data["conf2"], data["conf3"], data["conf4"], data["conf5"] \
+        = zip(*data.apply(lambda x: predict(model, x["aktivitet"]), axis=1))
 
-    disagreement = data[data["prediction"] != data["nace1"]].sort_values(by=["confidence"], ascending=False)
+    disagreement = data[data["pred1"] != data["nace1"]].sort_values(by=["conf1"], ascending=False)
 
-    strongly_disagree = disagreement[disagreement["confidence"] > 0.7]
+    strongly_disagree = disagreement[disagreement["conf1"] > 0.7]
 
     logging.info(f"Model 'disagrees' with {len(disagreement)} code assignments, "
                  f"{(len(disagreement) / len(data)) * 100}%. "
@@ -43,8 +45,16 @@ def apply_to_input(config: Config):
     logging.info("Storing strong disagreements as " + config.path_to("disagrees.xlsx"))
     strongly_disagree.to_excel(config.path_to("disagrees.xlsx"), index=False)
 
+    logging.info("Storing all predictions (up to 1000000 rows) as " + config.path_to("all.xlsx"))
+    data.head(1000000).to_excel(config.path_to("all.xlsx"), index=False)
+
 
 def predict(model, text):
-    label, confidence = model.predict(text)
+    results = [result for result in zip(*model.predict(text, k=5))]
 
-    return label[0][9:], confidence[0]
+    # Only name predictions with confidence above 0.1
+    filtered = [(r[0][9:], r[1]) if r[1] > 0.1 else ("", 0) for r in results]
+
+    codes, confidences = zip(*filtered)
+
+    return codes + confidences

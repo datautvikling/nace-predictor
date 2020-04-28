@@ -5,6 +5,7 @@ from typing import Any
 
 class ModelType(Enum):
     fast_text = "FastText"
+    auto_ml = "AutoML"
 
 
 @dataclass(frozen=True)

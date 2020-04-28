@@ -88,6 +88,7 @@ class Prediction(Resource):
         threshold = _get_param(THRESHOLD_PARAM, DEFAULT_THRESHOLD, float)
 
         pred = get_predictor().predict(PredictionDescription(text, orgform), amount, threshold)
+
         result = to_model(pred)
 
         _log_prediction(text, orgform, amount, threshold, result)

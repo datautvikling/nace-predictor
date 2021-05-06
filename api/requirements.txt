@@ -1,6 +1,6 @@
 flask==1.1.1
 flask-restx==0.1.1
-flask-cors==3.0.8
+flask-cors==3.0.9
 fasttext==0.9.1
 werkzeug==0.16.1  # There is an issue with Flask and werkzeug 1.0.0, don't upgrade yet
 google-cloud-storage==1.26.0

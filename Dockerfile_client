@@ -1,0 +1,10 @@
+FROM node:10
+
+RUN npm install -g create-elm-app --unsafe-perm
+
+COPY /demo-client .
+
+EXPOSE 3000
+
+ENTRYPOINT ["elm-app"]
+CMD ["start"]

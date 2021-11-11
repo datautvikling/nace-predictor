@@ -27,7 +27,7 @@ def redirect_to_api():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host="0.0.0.0")
 else:
     # Assume we're running in GCP, configure logging.
     # For other environments, this code should be removed.
